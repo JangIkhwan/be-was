@@ -33,10 +33,10 @@ public class RequestHandler implements Runnable {
             logger.debug("path {}", path);
 
             if(path.equals("/")){
-                DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = "<h1>Hello World</h1>".getBytes();
-                response200Header(dos, "text/html", body.length);
-                responseBody(dos, body);
+                MainHandler handler = new MainHandler();
+                ResponseWriter responseWriter = new ResponseWriter(out);
+                Response response = handler.handle();
+                responseWriter.write(response.getBody(), response.getContentType());
             }
             if(path.endsWith(".html")){
                 DataOutputStream dos = new DataOutputStream(out);
