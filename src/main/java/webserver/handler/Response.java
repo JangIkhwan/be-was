@@ -1,4 +1,4 @@
-package webserver;
+package webserver.handler;
 
 public class Response {
     private byte[] body;

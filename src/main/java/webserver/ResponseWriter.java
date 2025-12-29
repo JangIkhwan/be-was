@@ -16,7 +16,7 @@ public class ResponseWriter {
          dos = new DataOutputStream(out);
     }
 
-    public void write(byte[] body, String contentType){
+    public void write200Response(byte[] body, String contentType){
         response200Header(dos, contentType, body.length);
         responseBody(dos, body);
     }
@@ -36,6 +36,15 @@ public class ResponseWriter {
         try {
             dos.write(body, 0, body.length);
             dos.flush();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void write404Response() {
+        try {
+            dos.writeBytes("HTTP/1.1 404 NOT FOUND \r\n");
+            dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
