@@ -8,11 +8,6 @@ public class Response {
 
     public Response(){ }
 
-    public Response(byte[] body, String contentType) {
-        this.body = body;
-        this.contentType = contentType;
-    }
-
     public byte[] getBody() {
         return body;
     }

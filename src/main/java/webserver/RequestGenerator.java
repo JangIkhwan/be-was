@@ -56,10 +56,6 @@ public class RequestGenerator {
         }
     }
 
-    public Map<String, String> getParams() {
-        return params;
-    }
-
     public String getPath() {
         return path;
     }
