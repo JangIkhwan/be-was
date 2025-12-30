@@ -8,7 +8,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RequestGenerator {
@@ -19,18 +21,26 @@ public class RequestGenerator {
 
     public RequestGenerator(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String line = br.readLine();
 
-        logger.debug("http first line {}", line);
+        String requestLine = br.readLine();
+        List<String> headers = new ArrayList<>();
+        String headerLine;
+        while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
+            headers.add(headerLine);
+        }
 
-        String url = line.split(" ")[1];
-        String[] tokens = url.split("\\?");
+        logger.debug("http first line {}", requestLine);
+
+        String url = requestLine.split(" ")[1];
+        String[] tokens = url.split("\\?", 2);
         this.path = tokens[0];
 
         logger.debug("path {}", this.path);
 
         this.params = new HashMap<>();
-        parseParamters(tokens[1]);
+        if(tokens != null && tokens.length >= 2){
+            parseParamters(tokens[1]);
+        }
     }
 
     private void parseParamters(String rawQueryString) {
@@ -38,9 +48,11 @@ public class RequestGenerator {
         String[] rawQueryParams = rawQueryString.split("&");
         for(String rawQueryParam : rawQueryParams){
             String[] keyAndValue = rawQueryParam.split("=");
-            String key = keyAndValue[0];
-            String value = keyAndValue[1];
-            params.put(key, value);
+            if(keyAndValue != null && keyAndValue.length == 2){
+                String key = keyAndValue[0];
+                String value = keyAndValue[1];
+                params.put(key, value);
+            }
         }
     }
 

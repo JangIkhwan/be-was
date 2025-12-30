@@ -24,7 +24,7 @@ public class RequestHandler implements Runnable {
         this.handlerMap.put("/", new MainHandler());
         this.handlerMap.put("/registration", new RegisterFormHandler());
         this.handlerMap.put("/create", new CreateUserHandler());
-        staticResourceHandler = new StaticResourceHandler();
+        this.staticResourceHandler = new StaticResourceHandler();
     }
 
     public void run() {
@@ -36,9 +36,13 @@ public class RequestHandler implements Runnable {
 
             RequestGenerator requestGenerator = new RequestGenerator(in);
             Request request = requestGenerator.generate();
-            ResponseWriter responseWriter = new ResponseWriter(out);
+
+            logger.debug("request parsing complete");
+
             Handler handler = resovleHandler(request.getPath());
             Response response = handler.handle(request);
+
+            ResponseWriter responseWriter = new ResponseWriter(out);
             sendResponse(response, responseWriter);
 
         } catch (IOException e) {
