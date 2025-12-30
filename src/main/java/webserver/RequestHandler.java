@@ -22,6 +22,7 @@ public class RequestHandler implements Runnable {
         this.connection = connectionSocket;
         this.handlerMap = new HashMap<>();
         this.handlerMap.put("/", new MainHandler());
+        this.handlerMap.put("/registration", new RegisterFormHandler());
         staticResourceHandler = new StaticResourceHandler();
     }
 
