@@ -23,6 +23,7 @@ public class RequestHandler implements Runnable {
         this.handlerMap = new HashMap<>();
         this.handlerMap.put("/", new MainHandler());
         this.handlerMap.put("/registration", new RegisterFormHandler());
+        this.handlerMap.put("/create", new CreateUserHandler());
         staticResourceHandler = new StaticResourceHandler();
     }
 
@@ -37,13 +38,26 @@ public class RequestHandler implements Runnable {
 
             String line = br.readLine();
             logger.debug("http first line {}", line);
-            String path = line.split(" ")[1];
+            String url = line.split(" ")[1];
+            String[] tokens = url.split("\\?");
+            String path = tokens[0];
+            String rawQueryString = tokens[1];
+            String[] rawQueryParams = rawQueryString.split("&");
+
+            Map<String, String> params = new HashMap<>();
+            for(String rawQueryParam : rawQueryParams){
+                String[] keyAndValue = rawQueryParam.split("=");
+                String key = keyAndValue[0];
+                String value = keyAndValue[1];
+                params.put(key, value);
+            }
 
             logger.debug("path {}", path);
+            logger.debug("rawParams {}", rawQueryString);
 
             ResponseWriter responseWriter = new ResponseWriter(out);
             Handler handler = resovleHandler(path);
-            Response response = handler.handle(new Request(path));
+            Response response = handler.handle(new Request(path, params));
             sendResponse(response, responseWriter);
 
         } catch (IOException e) {
