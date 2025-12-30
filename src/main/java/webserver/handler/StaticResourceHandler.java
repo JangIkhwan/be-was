@@ -25,15 +25,12 @@ public class StaticResourceHandler implements Handler {
     }
 
     private String resolveContentType(String path) {
-        if(path.endsWith(".css")) {
-            return "text/css";
-        }
-        if(path.endsWith(".svg")) {
-            return "image/svg+xml";
-        }
-        if(path.endsWith(".ico")){
-            return "image/vnd.microsoft.icon";
-        }
+        if(path.endsWith(".js")) return "text/javascript";
+        if(path.endsWith(".css")) return "text/css";
+        if(path.endsWith(".svg")) return "image/svg+xml";
+        if(path.endsWith(".ico")) return "image/vnd.microsoft.icon";
+        if(path.endsWith(".png")) return "image/png";
+        if(path.endsWith(".jpg")) return "image/jpg";
         return "text/html";
     }
 }
