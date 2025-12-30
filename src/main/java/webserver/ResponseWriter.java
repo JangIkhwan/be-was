@@ -17,11 +17,11 @@ public class ResponseWriter {
     }
 
     public void write200Response(byte[] body, String contentType){
-        response200Header(dos, contentType, body.length);
-        responseBody(dos, body);
+        response200Header(contentType, body.length);
+        responseBody(body);
     }
 
-    private void response200Header(DataOutputStream dos, String contentType, int lengthOfBodyContent) {
+    private void response200Header(String contentType, int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
@@ -32,7 +32,7 @@ public class ResponseWriter {
         }
     }
 
-    private void responseBody(DataOutputStream dos, byte[] body) {
+    private void responseBody(byte[] body) {
         try {
             dos.write(body, 0, body.length);
             dos.flush();
@@ -45,8 +45,27 @@ public class ResponseWriter {
         try {
             dos.writeBytes("HTTP/1.1 404 NOT FOUND \r\n");
             dos.writeBytes("\r\n");
+            dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
+
+    public void write303Response(String redirectUrl) {
+        write303Header(redirectUrl);
+    }
+
+    private void write303Header(String redirectUrl) {
+        try {
+            dos.writeBytes("HTTP/1.1 303 See Other\r\n");
+            dos.writeBytes("Location: http://localhost:8080" + redirectUrl + "\r\n");
+            dos.writeBytes("Content-Length: 0\r\n");
+            dos.writeBytes("Connection: close\r\n");
+            dos.writeBytes("\r\n");
+            dos.flush();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
 }

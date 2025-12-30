@@ -61,6 +61,11 @@ public class RequestHandler implements Runnable {
     private static void sendResponse(Response response, ResponseWriter responseWriter) {
         if(response == null){
             responseWriter.write404Response();
+            return;
+        }
+        if(response.isRedirect()){
+            responseWriter.write303Response(response.getRedirectUrl());
+            return;
         }
         responseWriter.write200Response(response.getBody(), response.getContentType());
     }

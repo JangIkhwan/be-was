@@ -17,6 +17,8 @@ public class CreateUserHandler implements Handler {
 
         logger.debug("create user success");
 
-        return null;
+        Response response = new Response()
+                .setRedirectUrl("/index.html");
+        return response;
     }
 }
