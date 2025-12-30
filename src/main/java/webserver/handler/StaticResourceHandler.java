@@ -14,38 +14,26 @@ public class StaticResourceHandler implements Handler {
     @Override
     public Response handle(Request request) {
         String path = request.getPath();
-        if(path.endsWith(".html")){
-            try {
-                byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
-                return new Response(body, "text/html");
-            } catch (IOException e) {
-                logger.error("error occurred while reading static resource");
-            }
-        }
-        if(path.endsWith(".css")){
-            try {
-                byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
-                return new Response(body, "text/css");
-            } catch (IOException e) {
-                logger.error("error occurred while reading static resource");
-            }
-        }
-        if(path.endsWith(".svg")){
-            try {
-                byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
-                return new Response(body, "image/svg+xml");
-            } catch (IOException e) {
-                logger.error("error occurred while reading static resource");
-            }
-        }
-        if(path.endsWith(".ico")){
-            try {
-                byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
-                return new Response(body, "image/vnd.microsoft.icon");
-            } catch (IOException e) {
-                logger.error("error occurred while reading static resource");
-            }
+        String contentType = resolveContentType(path);
+        try {
+            byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
+            return new Response(body, contentType);
+        } catch (IOException e) {
+            logger.error("error occurred while reading static resource");
         }
         return null;
+    }
+
+    private String resolveContentType(String path) {
+        if(path.endsWith(".css")) {
+            return "text/css";
+        }
+        if(path.endsWith(".svg")) {
+            return "image/svg+xml";
+        }
+        if(path.endsWith(".ico")){
+            return "image/vnd.microsoft.icon";
+        }
+        return "text/html";
     }
 }
