@@ -43,7 +43,7 @@ public class RequestHandler implements Runnable {
             Response response = handler.handle(request);
 
             ResponseWriter responseWriter = new ResponseWriter(out);
-            sendResponse(response, responseWriter);
+            responseWriter.sendResponse(response);
 
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -56,17 +56,5 @@ public class RequestHandler implements Runnable {
             handler = staticResourceHandler;
         }
         return handler;
-    }
-
-    private static void sendResponse(Response response, ResponseWriter responseWriter) {
-        if(response == null){
-            responseWriter.write404Response();
-            return;
-        }
-        if(response.isRedirect()){
-            responseWriter.write303Response(response.getRedirectUrl());
-            return;
-        }
-        responseWriter.write200Response(response.getBody(), response.getContentType());
     }
 }

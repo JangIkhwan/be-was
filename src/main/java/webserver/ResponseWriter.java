@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.handler.Response;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -68,4 +69,15 @@ public class ResponseWriter {
         }
     }
 
+    public void sendResponse(Response response) {
+        if(response == null){
+            write404Response();
+            return;
+        }
+        if(response.isRedirect()){
+            write303Response(response.getRedirectUrl());
+            return;
+        }
+        write200Response(response.getBody(), response.getContentType());
+    }
 }
