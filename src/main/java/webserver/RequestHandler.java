@@ -34,30 +34,11 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-            String line = br.readLine();
-            logger.debug("http first line {}", line);
-            String url = line.split(" ")[1];
-            String[] tokens = url.split("\\?");
-            String path = tokens[0];
-            String rawQueryString = tokens[1];
-            String[] rawQueryParams = rawQueryString.split("&");
-
-            Map<String, String> params = new HashMap<>();
-            for(String rawQueryParam : rawQueryParams){
-                String[] keyAndValue = rawQueryParam.split("=");
-                String key = keyAndValue[0];
-                String value = keyAndValue[1];
-                params.put(key, value);
-            }
-
-            logger.debug("path {}", path);
-            logger.debug("rawParams {}", rawQueryString);
-
+            RequestGenerator requestGenerator = new RequestGenerator(in);
+            Request request = requestGenerator.generate();
             ResponseWriter responseWriter = new ResponseWriter(out);
-            Handler handler = resovleHandler(path);
-            Response response = handler.handle(new Request(path, params));
+            Handler handler = resovleHandler(request.getPath());
+            Response response = handler.handle(request);
             sendResponse(response, responseWriter);
 
         } catch (IOException e) {
