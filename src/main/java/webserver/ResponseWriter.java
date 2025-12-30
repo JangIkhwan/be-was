@@ -53,13 +53,9 @@ public class ResponseWriter {
     }
 
     public void write303Response(String redirectUrl) {
-        write303Header(redirectUrl);
-    }
-
-    private void write303Header(String redirectUrl) {
         try {
             dos.writeBytes("HTTP/1.1 303 See Other\r\n");
-            dos.writeBytes("Location: http://localhost:8080" + redirectUrl + "\r\n");
+            dos.writeBytes("Location: " + redirectUrl + "\r\n");
             dos.writeBytes("Content-Length: 0\r\n");
             dos.writeBytes("Connection: close\r\n");
             dos.writeBytes("\r\n");
@@ -69,8 +65,8 @@ public class ResponseWriter {
         }
     }
 
-    public void sendResponse(Response response) {
-        if(response == null){
+    public void write(Response response) {
+        if(response.isNotFound()){
             write404Response();
             return;
         }

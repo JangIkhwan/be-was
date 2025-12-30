@@ -14,12 +14,12 @@ public class RegisterFormHandler implements Handler{
     public Response handle(Request request) {
         try {
             byte[]  body = Files.readAllBytes(Path.of("./src/main/resources/static/registration/index.html"));
-            return new Response(body, "text/html");
+            return Response.ok(body, "text/html");
         }
         catch (IOException e) {
             logger.error("error occurred while reading static resource");
         }
-        return null;
+        return Response.notFound();
 
     }
 }

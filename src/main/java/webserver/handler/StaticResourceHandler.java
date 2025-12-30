@@ -17,11 +17,11 @@ public class StaticResourceHandler implements Handler {
         String contentType = resolveContentType(path);
         try {
             byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
-            return new Response(body, contentType);
+            return Response.ok(body, contentType);
         } catch (IOException e) {
             logger.error("error occurred while reading static resource");
         }
-        return null;
+        return Response.notFound();
     }
 
     private String resolveContentType(String path) {

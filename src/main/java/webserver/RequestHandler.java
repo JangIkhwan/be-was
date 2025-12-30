@@ -43,7 +43,7 @@ public class RequestHandler implements Runnable {
             Response response = handler.handle(request);
 
             ResponseWriter responseWriter = new ResponseWriter(out);
-            responseWriter.sendResponse(response);
+            responseWriter.write(response);
 
         } catch (IOException e) {
             logger.error(e.getMessage());
