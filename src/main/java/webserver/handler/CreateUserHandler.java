@@ -12,7 +12,7 @@ public class CreateUserHandler implements Handler {
     public Response handle(Request request) {
         logger.debug("userId= {}", request.getParameter("userId"));
 
-        User user = new User(request.getParameter("user"), request.getParameter("password"), request.getParameter("name"), request.getParameter("email"));
+        User user = new User(request.getParameter("userId"), request.getParameter("password"), request.getParameter("name"), request.getParameter("email"));
         Database.addUser(user);
 
         logger.debug("create user success");
