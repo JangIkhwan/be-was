@@ -47,12 +47,12 @@ public class RequestGenerator {
         logger.debug("path {}", this.path);
 
         if(tokens.length >= 2){
-            parseParamters(tokens[1]);
+            parseParameters(tokens[1]);
         }
         logger.debug("params.size {}", this.params.size());
     }
 
-    private void parseParamters(String rawQueryString) {
+    private void parseParameters(String rawQueryString) {
         String[] rawQueryParams = rawQueryString.split("&");
         for(String rawQueryParam : rawQueryParams){
             String[] tokens = rawQueryParam.split("=");
