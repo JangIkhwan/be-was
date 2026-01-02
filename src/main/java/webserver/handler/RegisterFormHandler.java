@@ -8,6 +8,6 @@ public class RegisterFormHandler implements Handler{
 
     @Override
     public Response handle(Request request) {
-        return Response.redirect("/registration/index.html");
+        return Response.forward("/registration/index.html");
     }
 }
