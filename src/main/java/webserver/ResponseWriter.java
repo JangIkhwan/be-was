@@ -10,7 +10,7 @@ import java.io.OutputStream;
 
 public class ResponseWriter {
     private static final Logger logger = LoggerFactory.getLogger(ResponseWriter.class);
-
+    private final String CRLF = "\r\n";
     private DataOutputStream dos;
 
     public ResponseWriter(OutputStream out) {
@@ -25,7 +25,7 @@ public class ResponseWriter {
 
     private void writeStatusLine(Response response) {
         try{
-            dos.writeBytes("HTTP/1.1 " + response.getCode() + " " + response.getCodeDescription() + "\r\n");
+            dos.writeBytes("HTTP/1.1 " + response.getCode() + " " + response.getCodeDescription() + CRLF);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -34,13 +34,13 @@ public class ResponseWriter {
     private void writeHeader(Response response) {
         try {
             if(response.isRedirect()){
-                dos.writeBytes("Location: " + response.getRedirectUrl() + "\r\n");
+                dos.writeBytes("Location: " + response.getRedirectUrl() + CRLF);
             }
             if(response.hasBody()){
-                dos.writeBytes("Content-Type: " + response.getContentType() + "\r\n");
-                dos.writeBytes("Content-Length: " + response.getBody().length + "\r\n");
+                dos.writeBytes("Content-Type: " + response.getContentType() + CRLF);
+                dos.writeBytes("Content-Length: " + response.getBody().length + CRLF);
             }
-            dos.writeBytes("\r\n");
+            dos.writeBytes(CRLF);
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
