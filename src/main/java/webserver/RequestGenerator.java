@@ -8,50 +8,58 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RequestGenerator {
     private static final Logger logger = LoggerFactory.getLogger(RequestGenerator.class);
 
     private String path;
-    private Map<String, String> params;
+    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> params = new HashMap<>();
 
     public RequestGenerator(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
         String requestLine = br.readLine();
-        List<String> headers = new ArrayList<>();
-        String headerLine;
-        while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
-            headers.add(headerLine);
-        }
-
         logger.debug("http first line {}", requestLine);
 
+        parseRequestURL(requestLine);
+        parseHeader(br);
+    }
+
+    private void parseHeader(BufferedReader br) throws IOException {
+        String headerLine;
+        while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
+            String[] tokens = headerLine.split(": ");
+            if(tokens.length == 2){
+               this.headers.put(tokens[0], tokens[1]);
+            }
+        }
+        logger.debug("headers.size {}", this.headers.size());
+    }
+
+    private void parseRequestURL(String requestLine) {
         String url = requestLine.split(" ")[1];
         String[] tokens = url.split("\\?", 2);
-        this.path = tokens[0];
 
+        this.path = tokens[0];
         logger.debug("path {}", this.path);
 
-        this.params = new HashMap<>();
-        if(tokens != null && tokens.length >= 2){
+        if(tokens.length >= 2){
             parseParamters(tokens[1]);
         }
+        logger.debug("params.size {}", this.params.size());
     }
 
     private void parseParamters(String rawQueryString) {
-        logger.debug("rawQueryString {}", rawQueryString);
         String[] rawQueryParams = rawQueryString.split("&");
         for(String rawQueryParam : rawQueryParams){
-            String[] keyAndValue = rawQueryParam.split("=");
-            if(keyAndValue != null && keyAndValue.length == 2){
-                String key = keyAndValue[0];
-                String value = keyAndValue[1];
-                params.put(key, value);
+            String[] tokens = rawQueryParam.split("=");
+            if(tokens.length == 2){
+                String key = tokens[0];
+                String value = tokens[1];
+                this.params.put(key, value);
             }
         }
     }
