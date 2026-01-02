@@ -31,9 +31,11 @@ public class RequestGenerator {
     private void parseHeader(BufferedReader br) throws IOException {
         String headerLine;
         while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
-            String[] tokens = headerLine.split(": ");
+            String[] tokens = headerLine.split(":");
             if(tokens.length == 2){
-               this.headers.put(tokens[0], tokens[1]);
+                String field = tokens[0].trim();
+                String value = tokens[1].trim();
+                this.headers.put(field, value);
             }
         }
         logger.debug("headers.size {}", this.headers.size());
@@ -57,8 +59,8 @@ public class RequestGenerator {
         for(String rawQueryParam : rawQueryParams){
             String[] tokens = rawQueryParam.split("=");
             if(tokens.length == 2){
-                String key = tokens[0];
-                String value = tokens[1];
+                String key = tokens[0].trim();
+                String value = tokens[1].trim();
                 this.params.put(key, value);
             }
         }
