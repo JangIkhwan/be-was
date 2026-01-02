@@ -1,5 +1,7 @@
 package webserver.handler;
 
+import webserver.constant.ResponseStatusCode;
+
 public class Response {
     private int code;
     private byte[] body;
@@ -30,7 +32,7 @@ public class Response {
     }
 
     public boolean isRedirect() {
-        return code == 303;
+        return code == ResponseStatusCode.SEE_OTHERS.getCode();
     }
 
     public boolean hasBody(){
@@ -39,25 +41,25 @@ public class Response {
 
     public static Response ok(byte[] body, String contentType){
         Response response = new Response();
-        response.code = 200;
+        response.code = ResponseStatusCode.OK.getCode();
         response.body = body;
         response.contentType = contentType;
-        response.codeDescription = "OK";
+        response.codeDescription = ResponseStatusCode.OK.getDescription();
         return response;
     }
 
     public static Response redirect(String redirectUrl){
         Response response = new Response();
-        response.code = 303;
+        response.code = ResponseStatusCode.SEE_OTHERS.getCode();
         response.redirectUrl = redirectUrl;
-        response.codeDescription = "SEE OTHERS";
+        response.codeDescription = ResponseStatusCode.SEE_OTHERS.getDescription();
         return response;
     }
 
     public static Response notFound(){
         Response response = new Response();
-        response.code = 404;
-        response.codeDescription = "NOT FOUND";
+        response.code = ResponseStatusCode.NOT_FOUND.getCode();
+        response.codeDescription = ResponseStatusCode.NOT_FOUND.getDescription();
         return response;
     }
 }
