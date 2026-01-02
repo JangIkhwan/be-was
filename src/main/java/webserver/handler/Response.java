@@ -58,18 +58,15 @@ public class Response {
     }
 
     public static Response forward(String path) {
-        Response response = new Response();
         try{
-            response.body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
+            byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
+            String contentType = FileMimeType.resolveMimeType(path);
+            return Response.ok(body, contentType);
         }
         catch (IOException e) {
             logger.error("error occurred while reading static resource");
-            return Response.notFound();
         }
-        response.code = ResponseStatusCode.OK.getCode();
-        response.codeDescription = ResponseStatusCode.OK.getDescription();
-        response.contentType = FileMimeType.resolveMimeType(path);
-        return response;
+        return Response.notFound();
     }
 
     public static Response redirect(String redirectUrl){
