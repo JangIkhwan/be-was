@@ -11,20 +11,20 @@ import webserver.handler.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
-    private Map<String, Handler> handlerMap;
-
-    private Handler staticResourceHandler;
-
+    private static Map<String, Handler> handlerMap;
+    private static Handler staticResourceHandler;
     private Socket connection;
+
+    static{
+        handlerMap = new HashMap<>();
+        handlerMap.put("/", new MainHandler());
+        handlerMap.put("/registration", new RegisterFormHandler());
+        handlerMap.put("/create", new CreateUserHandler());
+        staticResourceHandler = new StaticResourceHandler();
+    }
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
-        this.handlerMap = new HashMap<>();
-        this.handlerMap.put("/", new MainHandler());
-        this.handlerMap.put("/registration", new RegisterFormHandler());
-        this.handlerMap.put("/create", new CreateUserHandler());
-        this.staticResourceHandler = new StaticResourceHandler();
     }
 
     public void run() {
