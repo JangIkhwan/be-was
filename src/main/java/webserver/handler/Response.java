@@ -41,7 +41,7 @@ public class Response {
     }
 
     public boolean isRedirect() {
-        return code == ResponseStatusCode.SEE_OTHERS.getCode();
+        return code == ResponseStatusCode.SEE_OTHER.getCode();
     }
 
     public boolean hasBody(){
@@ -71,8 +71,8 @@ public class Response {
 
     public static Response redirect(String redirectUrl){
         Response response = new Response();
-        response.code = ResponseStatusCode.SEE_OTHERS.getCode();
-        response.codeDescription = ResponseStatusCode.SEE_OTHERS.getDescription();
+        response.code = ResponseStatusCode.SEE_OTHER.getCode();
+        response.codeDescription = ResponseStatusCode.SEE_OTHER.getDescription();
         response.redirectUrl = redirectUrl;
         return response;
     }

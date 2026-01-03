@@ -2,7 +2,7 @@ package webserver.constant;
 
 public enum ResponseStatusCode {
     OK(200, "OK"),
-    SEE_OTHERS(303, "SEE OTHER"),
+    SEE_OTHER(303, "SEE OTHER"),
     NOT_FOUND(404, "NOT FOUND");
 
     private final int code;
