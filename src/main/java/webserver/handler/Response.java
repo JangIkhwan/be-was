@@ -48,15 +48,6 @@ public class Response {
         return body != null;
     }
 
-    public static Response ok(byte[] body, String contentType){
-        Response response = new Response();
-        response.code = ResponseStatusCode.OK.getCode();
-        response.codeDescription = ResponseStatusCode.OK.getDescription();
-        response.body = body;
-        response.contentType = contentType;
-        return response;
-    }
-
     public static Response forward(String path) {
         try{
             byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
@@ -67,6 +58,15 @@ public class Response {
             logger.error("error occurred while reading static resource");
         }
         return Response.notFound();
+    }
+
+    public static Response ok(byte[] body, String contentType){
+        Response response = new Response();
+        response.code = ResponseStatusCode.OK.getCode();
+        response.codeDescription = ResponseStatusCode.OK.getDescription();
+        response.body = body;
+        response.contentType = contentType;
+        return response;
     }
 
     public static Response redirect(String redirectUrl){
