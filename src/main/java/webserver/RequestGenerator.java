@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.exception.RequestParsingException;
 import webserver.handler.Request;
 
 import java.io.BufferedReader;
@@ -48,7 +49,7 @@ public class RequestGenerator {
     private void parseStatusLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
         if(tokens.length != 3){
-            throw new IllegalArgumentException();
+            throw new RequestParsingException();
         }
 
         this.method = tokens[0];

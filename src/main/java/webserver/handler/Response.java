@@ -83,4 +83,19 @@ public class Response {
         response.codeDescription = ResponseStatusCode.NOT_FOUND.getDescription();
         return response;
     }
+
+    public static Response internalServerError() {
+        Response response = new Response();
+        response.code = ResponseStatusCode.INTERNAL_SERVER_ERROR.getCode();
+        response.codeDescription = ResponseStatusCode.INTERNAL_SERVER_ERROR.getDescription();
+        return response;
+    }
+
+    public static Response badRequest() {
+        Response response = new Response();
+        response.code = ResponseStatusCode.BAD_REQUEST.getCode();
+        response.codeDescription = ResponseStatusCode.BAD_REQUEST.getDescription();
+        return response;
+    }
+
 }
