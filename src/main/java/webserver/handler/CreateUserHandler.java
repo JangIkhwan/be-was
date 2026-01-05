@@ -10,9 +10,14 @@ public class CreateUserHandler implements Handler {
 
     @Override
     public Response handle(Request request) {
-        logger.debug("userId= {}", request.getParameter("userId"));
+        String userId = Database.generateId();
+        String password = request.getParameter("password");
+        String name = request.getParameter("nickname");
+        String email = request.getParameter("email");
 
-        User user = new User(request.getParameter("userId"), request.getParameter("password"), request.getParameter("name"), request.getParameter("email"));
+        logger.debug("userId = {} password = {} name = {} email = {}", userId, password, name, email);
+
+        User user = new User(userId, password, name, email);
         Database.addUser(user);
 
         logger.debug("create user success");
