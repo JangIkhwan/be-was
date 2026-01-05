@@ -5,6 +5,7 @@ import model.User;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Database {
     private static Map<String, User> users = new HashMap<>();
@@ -19,5 +20,13 @@ public class Database {
 
     public static Collection<User> findAll() {
         return users.values();
+    }
+
+    public static String generateId(){
+        String id = UUID.randomUUID().toString();
+        while (users.containsKey(id)){
+            id = UUID.randomUUID().toString();
+        }
+        return id;
     }
 }
