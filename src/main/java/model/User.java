@@ -1,5 +1,7 @@
 package model;
 
+import webserver.exception.BusinessException;
+
 public class User {
     private String userId;
     private String password;
@@ -7,6 +9,12 @@ public class User {
     private String email;
 
     public User(String userId, String password, String name, String email) {
+        if(userId.isBlank() || password.isBlank() || name.isBlank() || email.isBlank()){
+            throw new BusinessException();
+        }
+        if(userId == null || password == null|| name == null || email == null){
+            throw new BusinessException();
+        }
         this.userId = userId;
         this.password = password;
         this.name = name;
