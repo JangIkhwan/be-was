@@ -113,6 +113,6 @@ public class RequestGenerator {
     }
 
     public Request generate(){
-        return new Request(path, params);
+        return new Request(method, path, params);
     }
 }

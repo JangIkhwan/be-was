@@ -17,9 +17,9 @@ public class RequestHandler implements Runnable {
 
     static{
         handlerMap = new HashMap<>();
-        handlerMap.put("/", new MainHandler());
-        handlerMap.put("/registration", new RegisterFormHandler());
-        handlerMap.put("/create", new CreateUserHandler());
+        handlerMap.put("GET /", new MainHandler());
+        handlerMap.put("GET /registration", new RegisterFormHandler());
+        handlerMap.put("POST /create", new CreateUserHandler());
         staticResourceHandler = new StaticResourceHandler();
     }
 
@@ -32,14 +32,12 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-
             RequestGenerator requestGenerator = new RequestGenerator(in);
             Request request = requestGenerator.generate();
 
             logger.debug("request parsing complete");
 
-            Handler handler = resovleHandler(request.getPath());
+            Handler handler = resovleHandler(request.getHandlerKey());
             Response response = handler.handle(request);
 
             ResponseWriter responseWriter = new ResponseWriter(out);
