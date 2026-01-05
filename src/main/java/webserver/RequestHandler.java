@@ -21,6 +21,7 @@ public class RequestHandler implements Runnable {
         handlerMap.put("GET /", new MainHandler());
         handlerMap.put("GET /registration", new RegisterFormHandler());
         handlerMap.put("POST /create", new CreateUserHandler());
+        handlerMap.put("GET /login", new LoginFormHandler());
         staticResourceHandler = new StaticResourceHandler();
     }
 
