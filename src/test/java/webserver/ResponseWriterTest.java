@@ -66,4 +66,25 @@ class ResponseWriterTest {
         assertThat(response.startsWith("HTTP1.1 303 SEE OTHERS"));
         assertThat(response.contains("Location: /index.html"));
     }
+
+    @DisplayName("Set-Cookie 헤더가 있으면 응답에 쓴다")
+    @Test
+    void shouldWriteSetCookieHeaderToRespnonse(){
+        // given
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ResponseWriter responseWriter = new ResponseWriter(baos);
+
+        Response redirect = Response.redirect("/index.html");
+
+        redirect.setCookie("sid", "1234");
+        redirect.setCookie("Path", "/");
+
+        // when
+        responseWriter.write(redirect);
+
+        // then
+        String response = baos.toString();
+        assertThat(response.startsWith("HTTP1.1 303 SEE OTHERS"));
+        assertThat(response.contains("Set-Cookie: sid=1234; Path=/"));
+    }
 }
