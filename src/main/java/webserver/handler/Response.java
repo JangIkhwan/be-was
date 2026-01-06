@@ -14,11 +14,11 @@ import java.util.Set;
 
 public class Response {
     private static final Logger logger = LoggerFactory.getLogger(Response.class);
-    private String SET_COOKIE_HEADER = "Set-Cookie";
+    private static final String SET_COOKIE_HEADER = "Set-Cookie";
+    private static final String LOCATION_HEADER = "Location";
     private int code;
     private byte[] body;
     private String contentType;
-    private String redirectUrl;
     private String codeDescription;
     private Map<String, String> headers = new HashMap<>();
 
@@ -47,10 +47,6 @@ public class Response {
         return contentType;
     }
 
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
-
     public String getCodeDescription() {
         return codeDescription;
     }
@@ -63,16 +59,8 @@ public class Response {
         return headers.get(headerField);
     }
 
-    public boolean isRedirect() {
-        return code == ResponseStatusCode.SEE_OTHER.getCode();
-    }
-
     public boolean hasBody(){
         return body != null;
-    }
-
-    public boolean hasSetCookie() {
-        return headers.containsKey(SET_COOKIE_HEADER);
     }
 
     public static Response forward(String path) {
@@ -100,7 +88,7 @@ public class Response {
         Response response = new Response();
         response.code = ResponseStatusCode.SEE_OTHER.getCode();
         response.codeDescription = ResponseStatusCode.SEE_OTHER.getDescription();
-        response.redirectUrl = redirectUrl;
+        response.headers.put(LOCATION_HEADER, redirectUrl);
         return response;
     }
 
