@@ -38,26 +38,30 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            ResponseWriter responseWriter = new ResponseWriter(out);
-            try{
-                RequestGenerator requestGenerator = new RequestGenerator(in);
-                Request request = requestGenerator.generate(sessionStore);
-
-                logger.debug("request parsing complete");
-
-                Handler handler = resovleHandler(request.getHandlerKey());
-                Response response = handler.handle(request);
-                responseWriter.write(response);
-            }
-            catch (RequestParsingException e){
-                responseWriter.write(Response.badRequest());
-            }
-            catch (RuntimeException e){
-                responseWriter.write(Response.internalServerError());
-            }
+            processRequest(out, in);
 
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private void processRequest(OutputStream out, InputStream in) throws IOException {
+        ResponseWriter responseWriter = new ResponseWriter(out);
+        try{
+            RequestGenerator requestGenerator = new RequestGenerator(in);
+            Request request = requestGenerator.generate(sessionStore);
+
+            logger.debug("request parsing complete");
+
+            Handler handler = resovleHandler(request.getHandlerKey());
+            Response response = handler.handle(request);
+            responseWriter.write(response);
+        }
+        catch (RequestParsingException e){
+            responseWriter.write(Response.badRequest());
+        }
+        catch (RuntimeException e){
+            responseWriter.write(Response.internalServerError());
         }
     }
 
