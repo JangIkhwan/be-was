@@ -20,11 +20,11 @@ public class LoginHandler implements Handler {
 
         User userById = Database.findUserById(email);
         if(!foundUser(userById)){
-            return Response.badRequest();
+            return Response.forward("/login/error.html");
         }
 
         if(!matchedPassword(userById, password)){
-            return Response.badRequest();
+            return Response.forward("/login/error.html");
         }
 
         SessionStore sessionStore = request.getSessionStore();
