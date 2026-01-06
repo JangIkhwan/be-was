@@ -33,7 +33,11 @@ public class LoginHandler implements Handler {
 
         logger.debug("session created");
 
-        return Response.redirect("/index.html");
+        Response response = Response.redirect("/index.html");
+        response.setCookie("sid", sessionId);
+        response.setCookie("Path", "/");
+
+        return response;
     }
 
     private static boolean matchedPassword(User userById, String password) {
