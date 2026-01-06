@@ -9,11 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
 import webserver.handler.*;
+import webserver.session.SessionStore;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static Map<String, Handler> handlerMap;
     private static Handler staticResourceHandler;
+    private static SessionStore sessionStore;
     private Socket connection;
 
     static{
@@ -22,7 +24,9 @@ public class RequestHandler implements Runnable {
         handlerMap.put("GET /registration", new RegisterFormHandler());
         handlerMap.put("POST /create", new CreateUserHandler());
         handlerMap.put("GET /login", new LoginFormHandler());
+        handlerMap.put("POST /login", new LoginHandler());
         staticResourceHandler = new StaticResourceHandler();
+        sessionStore = new SessionStore();
     }
 
     public RequestHandler(Socket connectionSocket) {
@@ -37,7 +41,7 @@ public class RequestHandler implements Runnable {
             ResponseWriter responseWriter = new ResponseWriter(out);
             try{
                 RequestGenerator requestGenerator = new RequestGenerator(in);
-                Request request = requestGenerator.generate();
+                Request request = requestGenerator.generate(sessionStore);
 
                 logger.debug("request parsing complete");
 
