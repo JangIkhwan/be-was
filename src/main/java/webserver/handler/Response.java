@@ -6,8 +6,12 @@ import webserver.constant.FileMimeType;
 import webserver.constant.ResponseStatusCode;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -67,6 +71,29 @@ public class Response {
     public static Response forward(String path) {
         try{
             byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
+            String contentType = FileMimeType.resolveMimeType(path);
+            return Response.ok(body, contentType);
+        }
+        catch (IOException e) {
+            logger.error("error occurred while reading static resource");
+        }
+        return Response.notFound();
+    }
+
+    public static Response forwardDynamicHtml(Map<String, String> model, String path) {
+        try{
+            Path filePath = Paths.get("./src/main/resources/static" + path);
+            String bodyString = Files.readString(filePath, StandardCharsets.UTF_8);
+
+            logger.debug("bodyString = {} " , bodyString);
+
+            for(String key : model.keySet()){
+                String toReplace = "\\$\\{\\{" + key + "\\}\\}";
+                logger.debug("toReplace = {}", toReplace);
+                bodyString = bodyString.replaceAll(toReplace, model.get(key));
+            }
+
+            byte[] body = bodyString.getBytes(StandardCharsets.UTF_8);
             String contentType = FileMimeType.resolveMimeType(path);
             return Response.ok(body, contentType);
         }

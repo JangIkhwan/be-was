@@ -116,6 +116,6 @@ public class RequestGenerator {
     }
 
     public Request generate(SessionStore sessionStore){
-        return new Request(method, path, params, sessionStore);
+        return new Request(method, path, headers, params, sessionStore);
     }
 }

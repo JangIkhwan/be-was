@@ -29,11 +29,11 @@ public class LoginHandler implements Handler {
 
         SessionStore sessionStore = request.getSessionStore();
         String sessionId = UUID.randomUUID().toString();
-        sessionStore.addSession(sessionId, userById.getUserId());
+        sessionStore.addSession(sessionId, userById);
 
         logger.debug("session created");
 
-        Response response = Response.redirect("/index.html");
+        Response response = Response.redirect("/");
         response.setCookie("sid", sessionId);
         response.setCookie("Path", "/");
 
