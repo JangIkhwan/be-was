@@ -3,6 +3,7 @@ package webserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.handler.Request;
+import webserver.session.SessionStore;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,10 +20,11 @@ class RequestGeneratorTest {
         // given
         byte[] bytes = "HTTP1.1 / GET\r\n\r\n".getBytes(StandardCharsets.UTF_8);
         InputStream in = new ByteArrayInputStream(bytes);
+        SessionStore sessionStore = new SessionStore();
 
         // when
         RequestGenerator requestGenerator = new RequestGenerator(in);
-        Request request = requestGenerator.generate();
+        Request request = requestGenerator.generate(sessionStore);
 
         // then
         assertThat(request.getPath()).isEqualTo("/");
@@ -34,10 +36,11 @@ class RequestGeneratorTest {
         // given
         byte[] bytes = "HTTP1.1 /create?userId=1234&password=asdf&invalid=invalid=invalid GET\r\n\r\n".getBytes(StandardCharsets.UTF_8);
         InputStream in = new ByteArrayInputStream(bytes);
+        SessionStore sessionStore = new SessionStore();
 
         // when
         RequestGenerator requestGenerator = new RequestGenerator(in);
-        Request request = requestGenerator.generate();
+        Request request = requestGenerator.generate(sessionStore);
 
         // then
         assertThat(request.getPath()).isEqualTo("/create");
