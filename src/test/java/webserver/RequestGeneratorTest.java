@@ -3,6 +3,7 @@ package webserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.handler.Request;
+import webserver.http.RequestGenerator;
 import webserver.session.SessionStore;
 
 import java.io.ByteArrayInputStream;
@@ -11,7 +12,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RequestGeneratorTest {
     @DisplayName("요청 path 파싱에 성공한다")

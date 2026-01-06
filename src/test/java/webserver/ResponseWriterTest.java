@@ -3,12 +3,12 @@ package webserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.handler.Response;
+import webserver.http.ResponseWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ResponseWriterTest {
     @DisplayName("상태코드 200 응답을 반환한다")
