@@ -38,7 +38,7 @@ public class ResponseWriter {
     private void writeHeader(Response response) {
         try {
             for(String headerField : response.getHeaderFields()){
-                dos.writeBytes(headerField + HEADER_DELIMITER + response.getHeader(headerField));
+                dos.writeBytes(headerField + HEADER_DELIMITER + response.getHeader(headerField) + CRLF);
             }
             if(response.hasBody()){
                 dos.writeBytes(CONTENT_TYPE.getHeader() + HEADER_DELIMITER + response.getContentType() + CRLF);
