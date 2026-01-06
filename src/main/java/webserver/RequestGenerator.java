@@ -13,11 +13,12 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import static webserver.constant.HttpHeader.CONTENT_LENGTH;
+import static webserver.constant.HttpHeader.CONTENT_TYPE;
+
 public class RequestGenerator {
     private static final Logger logger = LoggerFactory.getLogger(RequestGenerator.class);
-    private String CONTENT_LENGTH = "Content-Length";
-    private String CONTENT_TYPE = "Content-Type";
-    private String FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
     private String path;
     private String method;
     private Map<String, String> headers = new HashMap<>();
@@ -85,13 +86,13 @@ public class RequestGenerator {
             return;
         }
 
-        if(headers.get(CONTENT_TYPE).equals(FORM_URLENCODED)){
+        if(headers.get(CONTENT_TYPE.getHeader()).equals(FORM_URLENCODED)){
             parseUrlEncodedBody(br);
         }
     }
 
     private void parseUrlEncodedBody(BufferedReader br) throws IOException {
-        int contentLength = Integer.parseInt(headers.get(CONTENT_LENGTH));
+        int contentLength = Integer.parseInt(headers.get(CONTENT_LENGTH.getHeader()));
         char[] buffer = new char[contentLength];
         br.read(buffer, 0, contentLength);
         String body = new String(buffer);
@@ -107,7 +108,7 @@ public class RequestGenerator {
     }
 
     private boolean canParseBody() {
-        return headers.containsKey(CONTENT_LENGTH) && headers.containsKey(CONTENT_TYPE);
+        return headers.containsKey(CONTENT_LENGTH.getHeader()) && headers.containsKey(CONTENT_TYPE.getHeader());
     }
 
     public String getPath() {

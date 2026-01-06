@@ -8,9 +8,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static webserver.constant.HttpHeader.CONTENT_LENGTH;
+import static webserver.constant.HttpHeader.CONTENT_TYPE;
+
 public class ResponseWriter {
     private static final Logger logger = LoggerFactory.getLogger(ResponseWriter.class);
     private final String CRLF = "\r\n";
+    private String HEADER_DELIMITER = ": ";
     private DataOutputStream dos;
 
     public ResponseWriter(OutputStream out) {
@@ -34,11 +38,11 @@ public class ResponseWriter {
     private void writeHeader(Response response) {
         try {
             for(String headerField : response.getHeaderFields()){
-                dos.writeBytes(headerField + ": " + response.getHeader(headerField));
+                dos.writeBytes(headerField + HEADER_DELIMITER + response.getHeader(headerField));
             }
             if(response.hasBody()){
-                dos.writeBytes("Content-Type: " + response.getContentType() + CRLF);
-                dos.writeBytes("Content-Length: " + response.getBody().length + CRLF);
+                dos.writeBytes(CONTENT_TYPE.getHeader() + HEADER_DELIMITER + response.getContentType() + CRLF);
+                dos.writeBytes(CONTENT_LENGTH.getHeader() + HEADER_DELIMITER + response.getBody().length + CRLF);
             }
             dos.writeBytes(CRLF);
         } catch (IOException e) {

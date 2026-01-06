@@ -12,10 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static webserver.constant.HttpHeader.LOCATION;
+import static webserver.constant.HttpHeader.SET_COOKIE;
+
 public class Response {
     private static final Logger logger = LoggerFactory.getLogger(Response.class);
-    private static final String SET_COOKIE_HEADER = "Set-Cookie";
-    private static final String LOCATION_HEADER = "Location";
     private int code;
     private byte[] body;
     private String contentType;
@@ -25,14 +26,14 @@ public class Response {
     private Response(){ }
 
     public void setCookie(String key, String value) {
-        String setCookieHeaderValue = headers.get(SET_COOKIE_HEADER);
+        String setCookieHeaderValue = headers.get(SET_COOKIE.getHeader());
         if(setCookieHeaderValue == null){
-            headers.put(SET_COOKIE_HEADER, key + "=" + value);
+            headers.put(SET_COOKIE.getHeader(), key + "=" + value);
             return;
         }
         String newValue = new StringBuffer().append("; ").append(key).append("=").append(value).toString();
         setCookieHeaderValue += newValue;
-        headers.put(SET_COOKIE_HEADER, setCookieHeaderValue);
+        headers.put(SET_COOKIE.getHeader(), setCookieHeaderValue);
     }
 
     public int getCode() {
@@ -88,7 +89,7 @@ public class Response {
         Response response = new Response();
         response.code = ResponseStatusCode.SEE_OTHER.getCode();
         response.codeDescription = ResponseStatusCode.SEE_OTHER.getDescription();
-        response.headers.put(LOCATION_HEADER, redirectUrl);
+        response.headers.put(LOCATION.getHeader(), redirectUrl);
         return response;
     }
 
