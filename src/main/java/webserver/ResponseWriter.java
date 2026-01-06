@@ -36,6 +36,9 @@ public class ResponseWriter {
             if(response.isRedirect()){
                 dos.writeBytes("Location: " + response.getRedirectUrl() + CRLF);
             }
+            for(String headerField : response.getHeaderFields()){
+                dos.writeBytes(headerField + ": " + response.getHeader(headerField));
+            }
             if(response.hasBody()){
                 dos.writeBytes("Content-Type: " + response.getContentType() + CRLF);
                 dos.writeBytes("Content-Length: " + response.getBody().length + CRLF);
