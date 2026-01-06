@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
 import webserver.handler.Request;
+import webserver.session.SessionStore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -113,7 +114,7 @@ public class RequestGenerator {
         return path;
     }
 
-    public Request generate(){
-        return new Request(method, path, params);
+    public Request generate(SessionStore sessionStore){
+        return new Request(method, path, params, sessionStore);
     }
 }
