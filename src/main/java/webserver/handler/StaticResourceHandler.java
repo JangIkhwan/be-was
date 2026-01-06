@@ -2,7 +2,7 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
+import webserver.http.RequestHandler;
 
 public class StaticResourceHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
