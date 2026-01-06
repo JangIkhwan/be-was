@@ -21,12 +21,4 @@ public class Database {
     public static Collection<User> findAll() {
         return users.values();
     }
-
-    public static String generateId(){
-        String id = UUID.randomUUID().toString();
-        while (users.containsKey(id)){
-            id = UUID.randomUUID().toString();
-        }
-        return id;
-    }
 }
