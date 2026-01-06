@@ -8,17 +8,32 @@ import webserver.constant.ResponseStatusCode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Response {
     private static final Logger logger = LoggerFactory.getLogger(Response.class);
-
+    private String SET_COOKIE_HEADER = "Set-Cookie";
     private int code;
     private byte[] body;
     private String contentType;
     private String redirectUrl;
     private String codeDescription;
+    private Map<String, String> headers = new HashMap<>();
 
-    public Response(){ }
+    private Response(){ }
+
+    public void setCookie(String key, String value) {
+        String setCookieHeaderValue = headers.get(SET_COOKIE_HEADER);
+        if(setCookieHeaderValue == null){
+            headers.put(SET_COOKIE_HEADER, key + "=" + value);
+            return;
+        }
+        String newValue = new StringBuffer().append("; ").append(key).append("=").append(value).toString();
+        setCookieHeaderValue += newValue;
+        headers.put(SET_COOKIE_HEADER, setCookieHeaderValue);
+    }
 
     public int getCode() {
         return code;
@@ -40,12 +55,24 @@ public class Response {
         return codeDescription;
     }
 
+    public Set<String> getHeaderFields() {
+        return headers.keySet();
+    }
+
+    public String getHeader(String headerField) {
+        return headers.get(headerField);
+    }
+
     public boolean isRedirect() {
         return code == ResponseStatusCode.SEE_OTHER.getCode();
     }
 
     public boolean hasBody(){
         return body != null;
+    }
+
+    public boolean hasSetCookie() {
+        return headers.containsKey(SET_COOKIE_HEADER);
     }
 
     public static Response forward(String path) {
