@@ -16,7 +16,7 @@ public class LoginHandler implements Handler {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        logger.debug("email = {} password = {}", email, password);
+        logger.debug("request={}", request);
 
         User userById = Database.findUserById(email);
         if(!foundUser(userById)){
@@ -29,11 +29,11 @@ public class LoginHandler implements Handler {
 
         SessionStore sessionStore = request.getSessionStore();
         String sessionId = UUID.randomUUID().toString();
-        sessionStore.addSession(sessionId, userById.getUserId());
+        sessionStore.addSession(sessionId, userById);
 
-        logger.debug("session created");
+        logger.debug("session created = {}", sessionId);
 
-        Response response = Response.redirect("/index.html");
+        Response response = Response.redirect("/");
         response.setCookie("sid", sessionId);
         response.setCookie("Path", "/");
 
