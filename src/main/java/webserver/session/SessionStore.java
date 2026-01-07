@@ -18,4 +18,8 @@ public class SessionStore {
     public Object getSession(String sessionId){
         return sessions.get(sessionId);
     }
+
+    public void remove(String sessionId) {
+        sessions.remove(sessionId);
+    }
 }

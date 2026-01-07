@@ -25,6 +25,7 @@ public class RequestHandler implements Runnable {
         handlerMap.put("POST /create", new CreateUserHandler());
         handlerMap.put("GET /login", new LoginFormHandler());
         handlerMap.put("POST /login", new LoginHandler());
+        handlerMap.put("POST /logout", new LogoutHandler());
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }
@@ -52,9 +53,13 @@ public class RequestHandler implements Runnable {
             Request request = requestGenerator.generate(sessionStore);
 
             logger.debug("request parsing complete");
+            logger.debug("request={}", request);
 
             Handler handler = resovleHandler(request.getHandlerKey());
             Response response = handler.handle(request);
+
+            logger.debug("response={}", response);
+
             responseWriter.write(response);
         }
         catch (RequestParsingException e){
