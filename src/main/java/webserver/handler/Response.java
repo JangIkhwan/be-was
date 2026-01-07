@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -140,4 +141,14 @@ public class Response {
         return response;
     }
 
+    @Override
+    public String toString() {
+        return "Response{" +
+                "code=" + code +
+                ", body=" + Arrays.toString(body) +
+                ", contentType='" + contentType + '\'' +
+                ", codeDescription='" + codeDescription + '\'' +
+                ", headers=" + headers +
+                '}';
+    }
 }

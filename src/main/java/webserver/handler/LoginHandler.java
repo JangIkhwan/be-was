@@ -16,8 +16,6 @@ public class LoginHandler implements Handler {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        logger.debug("request={}", request);
-
         User userById = Database.findUserById(email);
         if(!foundUser(userById)){
             return Response.forward("/login/error.html");

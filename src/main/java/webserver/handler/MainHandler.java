@@ -11,8 +11,6 @@ public class MainHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(MainHandler.class);
 
     public Response handle(Request request) {
-        logger.debug("request = {}", request);
-
         String sid = request.getCookie("sid");
         if(!foundCookie(sid)) {
             return Response.forward("/index.html");
