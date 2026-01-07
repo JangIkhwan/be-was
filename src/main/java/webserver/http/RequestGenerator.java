@@ -92,7 +92,10 @@ public class RequestGenerator {
     }
 
     private void parseUrlEncodedBody(BufferedReader br) throws IOException {
-        int contentLength = Integer.parseInt(headers.get(CONTENT_LENGTH.getHeader()));
+        int contentLength = Integer.parseInt(headers.getOrDefault(CONTENT_LENGTH.getHeader(), "0"));
+        if(contentLength == 0){
+            return;
+        }
         char[] buffer = new char[contentLength];
         br.read(buffer, 0, contentLength);
         String body = new String(buffer);
