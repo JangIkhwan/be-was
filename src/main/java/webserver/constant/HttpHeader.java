@@ -4,6 +4,7 @@ public enum HttpHeader {
     CONTENT_TYPE("Content-Type"),
     CONTENT_LENGTH("Content-Length"),
     SET_COOKIE("Set-Cookie"),
+    COOKIE("Cookie"),
     LOCATION("Location");
 
     private final String header;
