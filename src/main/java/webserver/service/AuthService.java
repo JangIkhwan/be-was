@@ -25,4 +25,15 @@ public class AuthService {
     private boolean loggedIn(User loginedUser) {
         return loginedUser != null;
     }
+
+    public User getAuthenticatedUser(Request request) {
+        String sid = request.getCookie("sid");
+        if(!foundCookie(sid)) {
+            return null;
+        }
+
+        SessionStore sessionStore = request.getSessionStore();
+        User loginedUser = (User) sessionStore.getSession(sid);
+        return loginedUser;
+    }
 }
