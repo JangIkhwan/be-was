@@ -9,11 +9,13 @@ import webserver.session.SessionStore;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static webserver.constant.ResponseStatusCode.OK;
+import static webserver.constant.ResponseStatusCode.SEE_OTHER;
 
 class LoginHandlerTest {
-    @DisplayName("올바른 요청이면 redirect를 응답한다")
+    @DisplayName("올바른 요청이면 리다이렉트한다")
     @Test
-    void shouldReturnRedirect_whenCorrectRequest(){
+    void shouldRedirectToMain_whenCorrectRequest(){
         // given
         String email = "email@email";
         String password = "pass";
@@ -27,18 +29,19 @@ class LoginHandlerTest {
 
         SessionStore sessionStore = new SessionStore();
 
-        Request request = new Request("POST", "/login", params, sessionStore);
+        Request request = new Request("POST", "/login", new HashMap<>(), params, sessionStore);
 
         // when
         Response response = loginHandler.handle(request);
 
         // then
-        assertThat(response.getCode()).isEqualTo(303);
+        assertThat(response.getCode()).isEqualTo(SEE_OTHER.getCode());
+        assertThat(response.getHeader("Location")).isEqualTo("/");
     }
 
-    @DisplayName("유저가 존재하지 않으면 Bad Request를 응답한다")
+    @DisplayName("유저가 존재하지 않으면 로그인 에러 폼을 전송한다")
     @Test
-    void shouldReturnBadRequest_whenUserNotFound(){
+    void shouldReturnLoginErrorForm_whenUserNotFound(){
         // given
         String email = "email2@email";
         String password = "pass2";
@@ -51,18 +54,19 @@ class LoginHandlerTest {
 
         SessionStore sessionStore = new SessionStore();
 
-        Request request = new Request("POST", "/login", params, sessionStore);
+        Request request = new Request("POST", "/login", new HashMap<>(), params, sessionStore);
 
         // when
         Response response = loginHandler.handle(request);
 
         // then
-        assertThat(response.getCode()).isEqualTo(400);
+        assertThat(response.getCode()).isEqualTo(OK.getCode());
+        assertThat(response.hasBody()).isTrue();
     }
 
-    @DisplayName("비밀번호가 일치하지 않으면 Bad Request를 응답한다")
+    @DisplayName("비밀번호가 일치하지 않으면 로그인 에러 폼을 전송한다")
     @Test
-    void shouldReturnBadRequest_whenIncorrectPassword(){
+    void shouldReturnOk_whenIncorrectPassword(){
         // given
         String email = "email@email";
         String password = "pass";
@@ -76,12 +80,13 @@ class LoginHandlerTest {
 
         SessionStore sessionStore = new SessionStore();
 
-        Request request = new Request("POST", "/login", params, sessionStore);
+        Request request = new Request("POST", "/login", new HashMap<>(), params, sessionStore);
 
         // when
         Response response = loginHandler.handle(request);
 
         // then
-        assertThat(response.getCode()).isEqualTo(400);
+        assertThat(response.getCode()).isEqualTo(OK.getCode());
+        assertThat(response.hasBody()).isTrue();
     }
 }
