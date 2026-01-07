@@ -20,14 +20,15 @@ public class RequestHandler implements Runnable {
     private Socket connection;
 
     static{
+        AuthService authService = new AuthService();
         handlerMap = new HashMap<>();
-        handlerMap.put("GET /", new MainHandler());
+        handlerMap.put("GET /", new MainHandler(authService));
         handlerMap.put("GET /registration", new RegisterFormHandler());
         handlerMap.put("POST /create", new CreateUserHandler());
         handlerMap.put("GET /login", new LoginFormHandler());
         handlerMap.put("POST /login", new LoginHandler());
         handlerMap.put("POST /logout", new LogoutHandler());
-        handlerMap.put("GET /mypage", new MyPageHandler(new AuthService()));
+        handlerMap.put("GET /mypage", new MyPageHandler(authService));
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }

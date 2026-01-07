@@ -3,36 +3,27 @@ package webserver.handler;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.session.SessionStore;
+import webserver.service.AuthService;
 
 import java.util.Map;
 
 public class MainHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(MainHandler.class);
+    private final AuthService authService;
+
+    public MainHandler(AuthService authService){
+        this.authService = authService;
+    }
 
     public Response handle(Request request) {
-        String sid = request.getCookie("sid");
-        if(!foundCookie(sid)) {
-            return Response.forward("/index.html");
-        }
-
-        SessionStore sessionStore = request.getSessionStore();
-        User loginedUser = (User) sessionStore.getSession(sid);
-        if(!hasLoggedIn(loginedUser)){
+        User loginUser = authService.getAuthenticatedUser(request);
+        if(loginUser == null){
             return Response.forward("/index.html");
         }
 
         logger.debug("session found");
 
-        Map<String, String> model = Map.of("name", loginedUser.getName());
+        Map<String, String> model = Map.of("name", loginUser.getName());
         return Response.forwardDynamicHtml(model, "/index_logined.html");
-    }
-
-    private boolean foundCookie(String sid) {
-        return sid != null;
-    }
-
-    private boolean hasLoggedIn(User loginedUser) {
-        return loginedUser != null;
     }
 }
