@@ -3,20 +3,15 @@ package webserver.handler;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.service.AuthService;
+import webserver.service.AuthUtil;
 
 import java.util.Map;
 
 public class MainHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(MainHandler.class);
-    private final AuthService authService;
-
-    public MainHandler(AuthService authService){
-        this.authService = authService;
-    }
 
     public Response handle(Request request) {
-        User loginUser = authService.getAuthenticatedUser(request);
+        User loginUser = AuthUtil.getAuthenticatedUser(request);
         if(loginUser == null){
             return Response.forward("/index.html");
         }

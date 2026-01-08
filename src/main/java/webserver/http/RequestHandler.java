@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
 import webserver.handler.*;
-import webserver.service.AuthService;
 import webserver.session.SessionStore;
 
 public class RequestHandler implements Runnable {
@@ -20,15 +19,14 @@ public class RequestHandler implements Runnable {
     private Socket connection;
 
     static{
-        AuthService authService = new AuthService();
         handlerMap = new HashMap<>();
-        handlerMap.put("GET /", new MainHandler(authService));
+        handlerMap.put("GET /", new MainHandler());
         handlerMap.put("GET /registration", new RegisterFormHandler());
         handlerMap.put("POST /create", new CreateUserHandler());
         handlerMap.put("GET /login", new LoginFormHandler());
         handlerMap.put("POST /login", new LoginHandler());
-        handlerMap.put("POST /logout", new LogoutHandler(authService));
-        handlerMap.put("GET /mypage", new MyPageHandler(authService));
+        handlerMap.put("POST /logout", new LogoutHandler());
+        handlerMap.put("GET /mypage", new MyPageHandler());
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }
