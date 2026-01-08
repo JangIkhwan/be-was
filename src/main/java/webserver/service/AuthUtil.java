@@ -4,8 +4,8 @@ import model.User;
 import webserver.handler.Request;
 import webserver.session.SessionStore;
 
-public class AuthService {
-    public boolean isAuthenticatedUser(Request request) {
+public class AuthUtil {
+    public static boolean isAuthenticatedUser(Request request) {
         String sid = request.getCookie("sid");
         if(!foundCookie(sid)) {
             return false;
@@ -18,15 +18,15 @@ public class AuthService {
         return true;
     }
 
-    private boolean foundCookie(String sid) {
+    private static boolean foundCookie(String sid) {
         return sid != null;
     }
 
-    private boolean loggedIn(User loginedUser) {
+    private static boolean loggedIn(User loginedUser) {
         return loginedUser != null;
     }
 
-    public User getAuthenticatedUser(Request request) {
+    public static User getAuthenticatedUser(Request request) {
         String sid = request.getCookie("sid");
         if(!foundCookie(sid)) {
             return null;
