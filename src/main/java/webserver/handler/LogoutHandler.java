@@ -2,12 +2,13 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.RedirectView;
+import webserver.mvc.Handler;
+import webserver.mvc.RedirectView;
 import webserver.service.AuthUtil;
 import webserver.session.SessionStore;
-import webserver.http.ModelAndView;
+import webserver.mvc.ModelAndView;
 
-public class LogoutHandler implements Handler{
+public class LogoutHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(LogoutHandler.class);
 
     @Override

@@ -1,4 +1,4 @@
-package webserver.http;
+package webserver.mvc;
 
 import webserver.handler.Response;
 

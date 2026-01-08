@@ -1,11 +1,12 @@
 package webserver.handler;
 
-import webserver.http.RedirectView;
-import webserver.http.StaticResourceView;
+import webserver.mvc.Handler;
+import webserver.mvc.RedirectView;
+import webserver.mvc.StaticResourceView;
 import webserver.service.AuthUtil;
-import webserver.http.ModelAndView;
+import webserver.mvc.ModelAndView;
 
-public class MyPageHandler implements Handler{
+public class MyPageHandler implements Handler {
     @Override
     public ModelAndView handle(Request request, Response response) {
         if(!AuthUtil.isAuthenticatedUser(request)){
