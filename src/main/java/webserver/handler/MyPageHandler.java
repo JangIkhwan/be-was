@@ -5,7 +5,7 @@ import webserver.http.Response;
 import webserver.mvc.Handler;
 import webserver.mvc.RedirectView;
 import webserver.mvc.StaticResourceView;
-import webserver.service.AuthUtil;
+import webserver.util.AuthUtil;
 import webserver.mvc.ModelAndView;
 
 public class MyPageHandler implements Handler {
