@@ -3,7 +3,6 @@ package webserver.handler;
 import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.service.AuthService;
 import webserver.session.SessionStore;
 
 import java.util.HashMap;
@@ -17,8 +16,7 @@ class LogoutHandlerTest {
     @Test
     void shouldRedirect_whenCorrectRequest(){
         // given
-        AuthService authService = new AuthService();
-        LogoutHandler logoutHandler = new LogoutHandler(authService);
+        LogoutHandler logoutHandler = new LogoutHandler();
         Map<String, String> header = new HashMap<>();
         header.put("Cookie", "sid=1234");
 
