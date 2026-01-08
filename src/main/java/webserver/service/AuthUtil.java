@@ -1,7 +1,7 @@
 package webserver.service;
 
 import model.User;
-import webserver.handler.Request;
+import webserver.http.Request;
 import webserver.session.SessionStore;
 
 public class AuthUtil {

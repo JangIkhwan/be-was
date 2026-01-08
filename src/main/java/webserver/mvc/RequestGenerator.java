@@ -3,7 +3,7 @@ package webserver.mvc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
-import webserver.handler.Request;
+import webserver.http.Request;
 import webserver.session.SessionStore;
 
 import java.io.BufferedReader;
