@@ -1,5 +1,7 @@
 package webserver.handler;
 
+import webserver.http.ModelAndView;
+
 public interface Handler {
-    Response handle(Request request);
+    ModelAndView handle(Request request, Response response);
 }

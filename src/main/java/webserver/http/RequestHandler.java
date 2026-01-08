@@ -52,12 +52,16 @@ public class RequestHandler implements Runnable {
         try{
             RequestGenerator requestGenerator = new RequestGenerator(in);
             Request request = requestGenerator.generate(sessionStore);
+            Response response = new Response();
+            ViewRenderer viewRenderer = new ViewRenderer();
 
             logger.debug("request parsing complete");
             logger.debug("request={}", request);
 
             Handler handler = resovleHandler(request.getHandlerKey());
-            Response response = handler.handle(request);
+            ModelAndView mav = handler.handle(request, response);
+
+            viewRenderer.render(mav, response);
 
             logger.debug("response={}", response);
 

@@ -5,12 +5,14 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.BusinessException;
+import webserver.http.ModelAndView;
+import webserver.http.ModelAndViewImpl;
 
 public class CreateUserHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(CreateUserHandler.class);
 
     @Override
-    public Response handle(Request request) {
+    public ModelAndView handle(Request request, Response response) {
         String userId = request.getParameter("email");
         String password = request.getParameter("password");
         String name = request.getParameter("nickname");
@@ -26,6 +28,6 @@ public class CreateUserHandler implements Handler {
 
         logger.debug("create user success");
 
-        return Response.redirect("/index.html");
+        return ModelAndViewImpl.redirect("/index.html");
     }
 }

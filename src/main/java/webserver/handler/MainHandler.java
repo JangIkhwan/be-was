@@ -3,22 +3,22 @@ package webserver.handler;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.ModelAndViewImpl;
 import webserver.service.AuthUtil;
-
-import java.util.Map;
+import webserver.http.ModelAndView;
 
 public class MainHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(MainHandler.class);
 
-    public Response handle(Request request) {
+    public ModelAndView handle(Request request, Response response) {
         User loginUser = AuthUtil.getAuthenticatedUser(request);
         if(loginUser == null){
-            return Response.forward("/index.html");
+            return ModelAndViewImpl.forward("/index.html");
         }
 
         logger.debug("session found");
 
-        Map<String, String> model = Map.of("name", loginUser.getName());
-        return Response.forwardDynamicHtml(model, "/index_logined.html");
+        return ModelAndViewImpl.forwardDynamic("/index_logined.html")
+                .addModelAttribute("name", loginUser.getName());
     }
 }
