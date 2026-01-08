@@ -1,15 +1,15 @@
 package webserver.handler;
 
 import org.junit.jupiter.api.Test;
+import webserver.http.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ResponseTest {
     @Test
     void setCookieTest(){
         // given
-        Response redirect = Response.redirect("/index.html");
+        Response redirect = new Response();
 
         // when
         redirect.setCookie("sid", "1234");

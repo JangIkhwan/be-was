@@ -2,8 +2,8 @@ package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.handler.Response;
-import webserver.http.ResponseWriter;
+import webserver.http.Response;
+import webserver.mvc.ResponseWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +19,8 @@ class ResponseWriterTest {
         ResponseWriter responseWriter = new ResponseWriter(baos);
 
         byte[] body = "hello".getBytes(StandardCharsets.UTF_8);
-        Response ok = Response.ok(body, "text/html");
+        Response ok = new Response();
+        ok.setOk(body, "text/html");
 
         // when
         responseWriter.write(ok);
@@ -56,7 +57,8 @@ class ResponseWriterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ResponseWriter responseWriter = new ResponseWriter(baos);
 
-        Response redirect = Response.redirect("/index.html");
+        Response redirect = new Response();
+        redirect.setRedirect("/index.html");
 
         // when
         responseWriter.write(redirect);
@@ -74,7 +76,8 @@ class ResponseWriterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ResponseWriter responseWriter = new ResponseWriter(baos);
 
-        Response redirect = Response.redirect("/index.html");
+        Response redirect = new Response();
+        redirect.setRedirect("/index.html");
 
         redirect.setCookie("sid", "1234");
         redirect.setCookie("Path", "/");
