@@ -2,7 +2,7 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.ModelAndViewImpl;
+import webserver.http.StaticResourceView;
 import webserver.http.RequestHandler;
 import webserver.http.ModelAndView;
 
@@ -11,6 +11,6 @@ public class StaticResourceHandler implements Handler {
 
     @Override
     public ModelAndView handle(Request request, Response response) {
-        return ModelAndViewImpl.forward(request.getPath());
+        return new StaticResourceView(request.getPath());
     }
 }
