@@ -2,10 +2,11 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.ModelAndView;
-import webserver.http.StaticResourceView;
+import webserver.mvc.Handler;
+import webserver.mvc.ModelAndView;
+import webserver.mvc.StaticResourceView;
 
-public class LoginFormHandler implements Handler{
+public class LoginFormHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(LoginFormHandler.class);
 
     @Override

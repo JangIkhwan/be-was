@@ -4,10 +4,11 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.RedirectView;
-import webserver.http.StaticResourceView;
+import webserver.mvc.Handler;
+import webserver.mvc.RedirectView;
+import webserver.mvc.StaticResourceView;
 import webserver.session.SessionStore;
-import webserver.http.ModelAndView;
+import webserver.mvc.ModelAndView;
 
 import java.util.UUID;
 
