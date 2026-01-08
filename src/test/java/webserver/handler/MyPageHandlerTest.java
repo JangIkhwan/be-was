@@ -3,7 +3,6 @@ package webserver.handler;
 import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.service.AuthService;
 import webserver.session.SessionStore;
 
 import java.util.HashMap;
@@ -18,8 +17,7 @@ class MyPageHandlerTest {
     @Test
     void shouldRedirect_whenUserNotLoggedIn(){
         // given
-        AuthService authService = new AuthService();
-        MyPageHandler myPageHandler = new MyPageHandler(authService);
+        MyPageHandler myPageHandler = new MyPageHandler();
 
         SessionStore sessionStore = new SessionStore();
 
@@ -36,8 +34,7 @@ class MyPageHandlerTest {
     @Test
     void shouldReturnMyPage_whenUserLoggedIn(){
         // given
-        AuthService authService = new AuthService();
-        MyPageHandler myPageHandler = new MyPageHandler(authService);
+        MyPageHandler myPageHandler = new MyPageHandler();
 
         HashMap<String, String> header = new HashMap<>();
         header.put("Cookie", "sid=1234");
