@@ -1,4 +1,4 @@
-package webserver.service;
+package webserver.util;
 
 import model.User;
 import webserver.http.Request;
