@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.BusinessException;
 import webserver.http.ModelAndView;
-import webserver.http.ModelAndViewImpl;
+import webserver.http.StaticResourceView;
 
 public class CreateUserHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(CreateUserHandler.class);
@@ -28,6 +28,6 @@ public class CreateUserHandler implements Handler {
 
         logger.debug("create user success");
 
-        return ModelAndViewImpl.redirect("/index.html");
+        return new StaticResourceView("/index.html");
     }
 }

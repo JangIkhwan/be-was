@@ -4,7 +4,8 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.ModelAndViewImpl;
+import webserver.http.RedirectView;
+import webserver.http.StaticResourceView;
 import webserver.session.SessionStore;
 import webserver.http.ModelAndView;
 
@@ -20,11 +21,11 @@ public class LoginHandler implements Handler {
 
         User userById = Database.findUserById(email);
         if(!foundUser(userById)){
-            return ModelAndViewImpl.forward("/login/error.html");
+            return new StaticResourceView("/login/error.html");
         }
 
         if(!matchedPassword(userById, password)){
-            return ModelAndViewImpl.forward("/login/error.html");
+            return new StaticResourceView("/login/error.html");
         }
 
         SessionStore sessionStore = request.getSessionStore();
@@ -36,7 +37,7 @@ public class LoginHandler implements Handler {
         response.setCookie("sid", sessionId);
         response.setCookie("Path", "/");
 
-        return ModelAndViewImpl.redirect("/");
+        return new RedirectView("/");
     }
 
     private static boolean matchedPassword(User userById, String password) {

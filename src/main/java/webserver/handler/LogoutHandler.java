@@ -2,7 +2,7 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.ModelAndViewImpl;
+import webserver.http.RedirectView;
 import webserver.service.AuthUtil;
 import webserver.session.SessionStore;
 import webserver.http.ModelAndView;
@@ -19,6 +19,6 @@ public class LogoutHandler implements Handler{
             logger.debug("session removed");
         }
 
-        return ModelAndViewImpl.redirect("/");
+        return new RedirectView("/");
     }
 }

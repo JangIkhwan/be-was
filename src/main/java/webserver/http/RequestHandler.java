@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
+import webserver.exception.StaticResourceNotFoundException;
 import webserver.handler.*;
 import webserver.session.SessionStore;
 
@@ -53,7 +54,6 @@ public class RequestHandler implements Runnable {
             RequestGenerator requestGenerator = new RequestGenerator(in);
             Request request = requestGenerator.generate(sessionStore);
             Response response = new Response();
-            ViewRenderer viewRenderer = new ViewRenderer();
 
             logger.debug("request parsing complete");
             logger.debug("request={}", request);
@@ -61,11 +61,14 @@ public class RequestHandler implements Runnable {
             Handler handler = resovleHandler(request.getHandlerKey());
             ModelAndView mav = handler.handle(request, response);
 
-            viewRenderer.render(mav, response);
+            mav.render(response);
 
             logger.debug("response={}", response);
 
             responseWriter.write(response);
+        }
+        catch(StaticResourceNotFoundException e){
+            responseWriter.write(Response.notFound());
         }
         catch (RequestParsingException e){
             responseWriter.write(Response.badRequest());

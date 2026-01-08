@@ -61,22 +61,24 @@ public class Response {
         return body != null;
     }
 
-    public void ok(byte[] body, String contentType){
+    public void setOk(byte[] body, String contentType){
         this.code = ResponseStatusCode.OK.getCode();
         this.codeDescription = ResponseStatusCode.OK.getDescription();
         this.body = body;
         this.contentType = contentType;
     }
 
-    public void redirect(String redirectUrl){
+    public void setRedirect(String redirectUrl){
         this.code = ResponseStatusCode.SEE_OTHER.getCode();
         this.codeDescription = ResponseStatusCode.SEE_OTHER.getDescription();
         this.headers.put(LOCATION.getHeader(), redirectUrl);
     }
 
-    public void notFound(){
-        this.code = ResponseStatusCode.NOT_FOUND.getCode();
-        this.codeDescription = ResponseStatusCode.NOT_FOUND.getDescription();
+    public static Response notFound(){
+        Response response = new Response();
+        response.code = ResponseStatusCode.NOT_FOUND.getCode();
+        response.codeDescription = ResponseStatusCode.NOT_FOUND.getDescription();
+        return response;
     }
 
     public static Response internalServerError() {
