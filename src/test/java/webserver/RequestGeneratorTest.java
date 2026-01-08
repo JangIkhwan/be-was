@@ -2,8 +2,8 @@ package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.handler.Request;
-import webserver.http.RequestGenerator;
+import webserver.http.Request;
+import webserver.mvc.RequestGenerator;
 import webserver.session.SessionStore;
 
 import java.io.ByteArrayInputStream;

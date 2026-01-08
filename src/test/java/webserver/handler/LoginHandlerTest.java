@@ -4,16 +4,19 @@ import db.Database;
 import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.Request;
+import webserver.http.Response;
+import webserver.mvc.ModelAndView;
+import webserver.mvc.RedirectView;
+import webserver.mvc.StaticResourceView;
 import webserver.session.SessionStore;
 
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static webserver.constant.ResponseStatusCode.OK;
-import static webserver.constant.ResponseStatusCode.SEE_OTHER;
 
 class LoginHandlerTest {
-    @DisplayName("올바른 요청이면 리다이렉트한다")
+    @DisplayName("올바른 요청이면 메인화면으로 리다이렉트한다")
     @Test
     void shouldRedirectToMain_whenCorrectRequest(){
         // given
@@ -32,11 +35,11 @@ class LoginHandlerTest {
         Request request = new Request("POST", "/login", new HashMap<>(), params, sessionStore);
 
         // when
-        Response response = loginHandler.handle(request);
+        ModelAndView mav = loginHandler.handle(request, new Response());
 
         // then
-        assertThat(response.getCode()).isEqualTo(SEE_OTHER.getCode());
-        assertThat(response.getHeader("Location")).isEqualTo("/");
+        assertThat(mav).isInstanceOf(RedirectView.class);
+        assertThat(mav.getViewName()).isEqualTo("/");
     }
 
     @DisplayName("유저가 존재하지 않으면 로그인 에러 폼을 전송한다")
@@ -57,11 +60,11 @@ class LoginHandlerTest {
         Request request = new Request("POST", "/login", new HashMap<>(), params, sessionStore);
 
         // when
-        Response response = loginHandler.handle(request);
+        ModelAndView mav = loginHandler.handle(request, new Response());
 
         // then
-        assertThat(response.getCode()).isEqualTo(OK.getCode());
-        assertThat(response.hasBody()).isTrue();
+        assertThat(mav).isInstanceOf(StaticResourceView.class);
+        assertThat(mav.getViewName()).isEqualTo("/login/error.html");
     }
 
     @DisplayName("비밀번호가 일치하지 않으면 로그인 에러 폼을 전송한다")
@@ -83,10 +86,10 @@ class LoginHandlerTest {
         Request request = new Request("POST", "/login", new HashMap<>(), params, sessionStore);
 
         // when
-        Response response = loginHandler.handle(request);
+        ModelAndView mav = loginHandler.handle(request, new Response());
 
         // then
-        assertThat(response.getCode()).isEqualTo(OK.getCode());
-        assertThat(response.hasBody()).isTrue();
+        assertThat(mav).isInstanceOf(StaticResourceView.class);
+        assertThat(mav.getViewName()).isEqualTo("/login/error.html");
     }
 }
