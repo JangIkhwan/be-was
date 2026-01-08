@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
 import webserver.exception.StaticResourceNotFoundException;
 import webserver.handler.*;
+import webserver.http.Request;
+import webserver.http.Response;
 import webserver.session.SessionStore;
 
 public class RequestHandler implements Runnable {

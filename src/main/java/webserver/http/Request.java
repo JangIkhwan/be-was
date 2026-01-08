@@ -1,4 +1,4 @@
-package webserver.handler;
+package webserver.http;
 
 import webserver.session.SessionStore;
 

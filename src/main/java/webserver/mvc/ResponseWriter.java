@@ -2,7 +2,7 @@ package webserver.mvc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.handler.Response;
+import webserver.http.Response;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

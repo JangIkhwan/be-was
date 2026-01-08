@@ -2,6 +2,8 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.Request;
+import webserver.http.Response;
 import webserver.mvc.Handler;
 import webserver.mvc.StaticResourceView;
 import webserver.mvc.ModelAndView;

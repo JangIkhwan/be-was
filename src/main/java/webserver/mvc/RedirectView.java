@@ -1,6 +1,6 @@
 package webserver.mvc;
 
-import webserver.handler.Response;
+import webserver.http.Response;
 
 import java.util.Set;
 

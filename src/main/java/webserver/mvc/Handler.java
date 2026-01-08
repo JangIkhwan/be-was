@@ -1,7 +1,7 @@
 package webserver.mvc;
 
-import webserver.handler.Request;
-import webserver.handler.Response;
+import webserver.http.Request;
+import webserver.http.Response;
 
 public interface Handler {
     ModelAndView handle(Request request, Response response);
