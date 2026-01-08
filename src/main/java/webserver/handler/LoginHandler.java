@@ -4,7 +4,9 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.ModelAndViewImpl;
 import webserver.session.SessionStore;
+import webserver.http.ModelAndView;
 
 import java.util.UUID;
 
@@ -12,17 +14,17 @@ public class LoginHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(LoginHandler.class);
 
     @Override
-    public Response handle(Request request) {
+    public ModelAndView handle(Request request, Response response) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         User userById = Database.findUserById(email);
         if(!foundUser(userById)){
-            return Response.forward("/login/error.html");
+            return ModelAndViewImpl.forward("/login/error.html");
         }
 
         if(!matchedPassword(userById, password)){
-            return Response.forward("/login/error.html");
+            return ModelAndViewImpl.forward("/login/error.html");
         }
 
         SessionStore sessionStore = request.getSessionStore();
@@ -31,11 +33,10 @@ public class LoginHandler implements Handler {
 
         logger.debug("session created = {}", sessionId);
 
-        Response response = Response.redirect("/");
         response.setCookie("sid", sessionId);
         response.setCookie("Path", "/");
 
-        return response;
+        return ModelAndViewImpl.redirect("/");
     }
 
     private static boolean matchedPassword(User userById, String password) {

@@ -2,15 +2,8 @@ package webserver.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.constant.FileMimeType;
 import webserver.constant.ResponseStatusCode;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +20,7 @@ public class Response {
     private String codeDescription;
     private Map<String, String> headers = new HashMap<>();
 
-    private Response(){ }
+    public Response(){ }
 
     public void setCookie(String key, String value) {
         String setCookieHeaderValue = headers.get(SET_COOKIE.getHeader());
@@ -68,63 +61,22 @@ public class Response {
         return body != null;
     }
 
-    public static Response forward(String path) {
-        try{
-            byte[] body = Files.readAllBytes(new File("./src/main/resources/static" + path).toPath());
-            String contentType = FileMimeType.resolveMimeType(path);
-            return Response.ok(body, contentType);
-        }
-        catch (IOException e) {
-            logger.error("error occurred while reading static resource");
-        }
-        return Response.notFound();
+    public void ok(byte[] body, String contentType){
+        this.code = ResponseStatusCode.OK.getCode();
+        this.codeDescription = ResponseStatusCode.OK.getDescription();
+        this.body = body;
+        this.contentType = contentType;
     }
 
-    public static Response forwardDynamicHtml(Map<String, String> model, String path) {
-        try{
-            Path filePath = Paths.get("./src/main/resources/static" + path);
-            String bodyString = Files.readString(filePath, StandardCharsets.UTF_8);
-
-            logger.debug("bodyString = {} " , bodyString);
-
-            for(String key : model.keySet()){
-                String toReplace = "\\$\\{\\{" + key + "\\}\\}";
-                logger.debug("toReplace = {}", toReplace);
-                bodyString = bodyString.replaceAll(toReplace, model.get(key));
-            }
-
-            byte[] body = bodyString.getBytes(StandardCharsets.UTF_8);
-            String contentType = FileMimeType.resolveMimeType(path);
-            return Response.ok(body, contentType);
-        }
-        catch (IOException e) {
-            logger.error("error occurred while reading static resource");
-        }
-        return Response.notFound();
+    public void redirect(String redirectUrl){
+        this.code = ResponseStatusCode.SEE_OTHER.getCode();
+        this.codeDescription = ResponseStatusCode.SEE_OTHER.getDescription();
+        this.headers.put(LOCATION.getHeader(), redirectUrl);
     }
 
-    public static Response ok(byte[] body, String contentType){
-        Response response = new Response();
-        response.code = ResponseStatusCode.OK.getCode();
-        response.codeDescription = ResponseStatusCode.OK.getDescription();
-        response.body = body;
-        response.contentType = contentType;
-        return response;
-    }
-
-    public static Response redirect(String redirectUrl){
-        Response response = new Response();
-        response.code = ResponseStatusCode.SEE_OTHER.getCode();
-        response.codeDescription = ResponseStatusCode.SEE_OTHER.getDescription();
-        response.headers.put(LOCATION.getHeader(), redirectUrl);
-        return response;
-    }
-
-    public static Response notFound(){
-        Response response = new Response();
-        response.code = ResponseStatusCode.NOT_FOUND.getCode();
-        response.codeDescription = ResponseStatusCode.NOT_FOUND.getDescription();
-        return response;
+    public void notFound(){
+        this.code = ResponseStatusCode.NOT_FOUND.getCode();
+        this.codeDescription = ResponseStatusCode.NOT_FOUND.getDescription();
     }
 
     public static Response internalServerError() {

@@ -1,13 +1,15 @@
 package webserver.handler;
 
+import webserver.http.ModelAndViewImpl;
 import webserver.service.AuthUtil;
+import webserver.http.ModelAndView;
 
 public class MyPageHandler implements Handler{
     @Override
-    public Response handle(Request request) {
+    public ModelAndView handle(Request request, Response response) {
         if(!AuthUtil.isAuthenticatedUser(request)){
-            return Response.redirect("/login");
+            return ModelAndViewImpl.redirect("/login");
         }
-        return Response.forward("/mypage/index.html");
+        return ModelAndViewImpl.forward("/mypage/index.html");
     }
 }
