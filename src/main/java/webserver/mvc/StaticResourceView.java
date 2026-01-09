@@ -9,7 +9,6 @@ import webserver.http.Response;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Set;
 
 public class StaticResourceView implements ModelAndView{
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceView.class);
@@ -20,23 +19,8 @@ public class StaticResourceView implements ModelAndView{
     }
 
     @Override
-    public ModelAndView addModelAttribute(String name, String value) {
-        return this;
-    }
-
-    @Override
     public String getViewName() {
         return viewName;
-    }
-
-    @Override
-    public Set<String> getModelNames() {
-        return Set.of();
-    }
-
-    @Override
-    public String getModelAttribute(String name) {
-        return "";
     }
 
     @Override
