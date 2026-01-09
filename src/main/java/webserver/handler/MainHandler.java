@@ -11,6 +11,9 @@ import webserver.mvc.StaticResourceView;
 import webserver.util.AuthUtil;
 import webserver.mvc.ModelAndView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(MainHandler.class);
 
@@ -22,7 +25,9 @@ public class MainHandler implements Handler {
 
         logger.debug("session found");
 
-        return new ModelAndDynamicView("/index_logined.html")
-                .addModelAttribute("name", loginUser.getName());
+        Map<String, String> model = new HashMap<>();
+        model.put("name", loginUser.getName());
+        return new ModelAndDynamicView(model,"/index_logined.html");
+
     }
 }

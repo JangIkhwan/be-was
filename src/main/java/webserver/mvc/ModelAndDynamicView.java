@@ -11,38 +11,21 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class ModelAndDynamicView implements ModelAndView{
     private static final Logger logger = LoggerFactory.getLogger(ModelAndDynamicView.class);
-    private Map<String, String> model = new HashMap<>();
+    private Map<String, String> model;
     private String viewName;
 
-    public ModelAndDynamicView(String viewName) {
+    public ModelAndDynamicView(Map<String, String> model, String viewName) {
+        this.model = model;
         this.viewName = viewName;
-    }
-
-    @Override
-    public ModelAndView addModelAttribute(String name, String value) {
-        model.put(name, value);
-        return this;
     }
 
     @Override
     public String getViewName() {
         return viewName;
-    }
-
-    @Override
-    public Set<String> getModelNames() {
-        return model.keySet();
-    }
-
-    @Override
-    public String getModelAttribute(String name) {
-        return model.get(name);
     }
 
     @Override
@@ -53,10 +36,10 @@ public class ModelAndDynamicView implements ModelAndView{
 
             logger.debug("bodyString = {} " , bodyString);
 
-            for(String name : getModelNames()){
+            for(String name : model.keySet()){
                 String toReplace = "\\$\\{\\{" + name + "\\}\\}";
                 logger.debug("toReplace = {}", toReplace);
-                bodyString = bodyString.replaceAll(toReplace, getModelAttribute(name));
+                bodyString = bodyString.replaceAll(toReplace, model.get(name));
             }
 
             byte[] body = bodyString.getBytes(StandardCharsets.UTF_8);

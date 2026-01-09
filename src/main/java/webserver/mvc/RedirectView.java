@@ -2,8 +2,6 @@ package webserver.mvc;
 
 import webserver.http.Response;
 
-import java.util.Set;
-
 public class RedirectView implements ModelAndView {
     private String viewName;
 
@@ -12,23 +10,8 @@ public class RedirectView implements ModelAndView {
     }
 
     @Override
-    public ModelAndView addModelAttribute(String name, String value) {
-        return this;
-    }
-
-    @Override
     public String getViewName() {
         return viewName;
-    }
-
-    @Override
-    public Set<String> getModelNames() {
-        return Set.of();
-    }
-
-    @Override
-    public String getModelAttribute(String name) {
-        return "";
     }
 
     @Override
