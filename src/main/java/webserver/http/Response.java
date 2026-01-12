@@ -95,6 +95,13 @@ public class Response {
         return response;
     }
 
+    public static Response methodNotAllowed() {
+        Response response = new Response();
+        response.code = ResponseStatusCode.METHOD_NOT_ALLOWED.getCode();
+        response.codeDescription = ResponseStatusCode.METHOD_NOT_ALLOWED.getDescription();
+        return response;
+    }
+
     @Override
     public String toString() {
         return "Response{" +
