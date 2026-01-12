@@ -76,6 +76,12 @@ public class RequestHandler implements Runnable {
             view.render(response);
             responseWriter.write(response);
         }
+        catch (MethodNotAllowedException e){
+            ModelAndView view = new StaticResourceView("/error/405_error.html");
+            Response response = Response.methodNotAllowed();
+            view.render(response);
+            responseWriter.write(response);
+        }
         catch (RequestParsingException e){
             responseWriter.write(Response.badRequest());
         }
