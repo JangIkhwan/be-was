@@ -40,6 +40,7 @@ public class RequestGenerator {
         while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
             String[] tokens = headerLine.split(":");
             if(tokens.length == 2){
+                // TODO 헤더 필드 대소문자 구분 없도록 만들기
                 String field = tokens[0].trim();
                 String value = tokens[1].trim();
                 this.headers.put(field, value);

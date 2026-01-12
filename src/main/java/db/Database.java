@@ -10,6 +10,10 @@ import java.util.UUID;
 public class Database {
     private static Map<String, User> users = new HashMap<>();
 
+    static {
+        users.put("asdf", new User("asdf", "asdf", "asdf", "asdf"));
+    }
+
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
     }

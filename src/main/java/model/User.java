@@ -4,6 +4,7 @@ import webserver.exception.BusinessException;
 
 public class User {
     private String userId;
+    private Long id;
     private String password;
     private String name;
     private String email;
@@ -35,6 +36,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setId(Long id){
+        this.id = id;
     }
 
     @Override

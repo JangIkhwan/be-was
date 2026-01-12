@@ -1,6 +1,7 @@
 package webserver.handler;
 
 import db.Database;
+import db.UserRepository;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ public class CreateUserHandler implements Handler {
         if(Database.findUserById(userId) != null){
             throw new BusinessException();
         }
+
+        UserRepository userRepository = new UserRepository();
+        userRepository.save(null);
         User user = new User(userId, password, name, email);
         Database.addUser(user);
 
