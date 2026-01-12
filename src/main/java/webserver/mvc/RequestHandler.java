@@ -30,6 +30,7 @@ public class RequestHandler implements Runnable {
         handlerMap.put("POST /login", new LoginHandler());
         handlerMap.put("POST /logout", new LogoutHandler());
         handlerMap.put("GET /mypage", new MyPageHandler());
+        handlerMap.put("GET /article/create-form", new CreateArticleFormHandler());
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }
