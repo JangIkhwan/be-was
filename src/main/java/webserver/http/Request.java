@@ -53,8 +53,8 @@ public class Request {
         return params.get(key);
     }
 
-    public String getHandlerKey() {
-        return method + " " + path;
+    public String getMethod() {
+        return method;
     }
 
     public SessionStore getSessionStore(){
