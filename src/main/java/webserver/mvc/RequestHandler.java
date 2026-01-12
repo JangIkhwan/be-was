@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.exception.MethodNotAllowedException;
 import webserver.exception.RequestParsingException;
 import webserver.exception.StaticResourceNotFoundException;
 import webserver.handler.*;
@@ -16,21 +17,20 @@ import webserver.session.SessionStore;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static Map<String, Handler> handlerMap;
+    private static Map<String, Map<String, Handler>> routingTable;
     private static Handler staticResourceHandler;
     private static SessionStore sessionStore;
     private Socket connection;
 
     static{
-        handlerMap = new HashMap<>();
-        handlerMap.put("GET /", new MainHandler());
-        handlerMap.put("GET /registration", new RegisterFormHandler());
-        handlerMap.put("POST /create", new CreateUserHandler());
-        handlerMap.put("GET /login", new LoginFormHandler());
-        handlerMap.put("POST /login", new LoginHandler());
-        handlerMap.put("POST /logout", new LogoutHandler());
-        handlerMap.put("GET /mypage", new MyPageHandler());
-        handlerMap.put("GET /article/create-form", new CreateArticleFormHandler());
+        routingTable = new HashMap<>();
+        routingTable.put("/", Map.of("GET", new MainHandler()));
+        routingTable.put("/registration", Map.of("GET", new RegisterFormHandler()));
+        routingTable.put("/create", Map.of("POST", new CreateUserHandler()));
+        routingTable.put("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler()));
+        routingTable.put("/logout", Map.of("POST", new LogoutHandler()));
+        routingTable.put("/mypage", Map.of("POST", new MyPageHandler()));
+        routingTable.put("/article/create-form", Map.of("GET", new CreateArticleFormHandler()));
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }
@@ -61,7 +61,7 @@ public class RequestHandler implements Runnable {
             logger.debug("request parsing complete");
             logger.debug("request={}", request);
 
-            Handler handler = resovleHandler(request.getHandlerKey());
+            Handler handler = resovleHandler(request.getPath(), request.getMethod());
             ModelAndView mav = handler.handle(request, response);
 
             mav.render(response);
@@ -84,11 +84,15 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private Handler resovleHandler(String path) {
-        Handler handler = handlerMap.get(path);
-        if(handler == null){
-            handler = staticResourceHandler;
+    private Handler resovleHandler(String uri, String method) {
+        Map<String, Handler> methodHandlers = routingTable.get(uri);
+        if(methodHandlers != null){
+            Handler handler = methodHandlers.get(method);
+            if(handler == null){
+                throw new MethodNotAllowedException();
+            }
+            return handler;
         }
-        return handler;
+        return staticResourceHandler;
     }
 }
