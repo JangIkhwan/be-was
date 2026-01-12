@@ -71,7 +71,10 @@ public class RequestHandler implements Runnable {
             responseWriter.write(response);
         }
         catch(StaticResourceNotFoundException e){
-            responseWriter.write(Response.notFound());
+            ModelAndView view = new StaticResourceView("/error/404_error.html");
+            Response response = Response.notFound();
+            view.render(response);
+            responseWriter.write(response);
         }
         catch (RequestParsingException e){
             responseWriter.write(Response.badRequest());
