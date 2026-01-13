@@ -8,6 +8,13 @@ public class User {
     private String name;
     private String email;
 
+    public User(Long id, String password, String name, String email) {
+        this.id = id;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
+
     public User(String password, String name, String email) {
         if (password.isBlank() || name.isBlank() || email.isBlank()) {
             throw new BusinessException();
