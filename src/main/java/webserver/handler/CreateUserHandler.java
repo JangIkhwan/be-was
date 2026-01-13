@@ -14,6 +14,11 @@ import webserver.mvc.StaticResourceView;
 
 public class CreateUserHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(CreateUserHandler.class);
+    private final UserRepository userRepository;
+
+    public CreateUserHandler(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public ModelAndView handle(Request request, Response response) {
@@ -30,7 +35,6 @@ public class CreateUserHandler implements Handler {
 
         User user = new User(password, name, email);
 
-        UserRepository userRepository = new UserRepository();
         userRepository.save(user);
 
         Database.addUser(user);

@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import db.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.MethodNotAllowedException;
@@ -23,10 +24,11 @@ public class RequestHandler implements Runnable {
     private Socket connection;
 
     static{
+        UserRepository userRepository = new UserRepository();
         routingTable = new HashMap<>();
         routingTable.put("/", Map.of("GET", new MainHandler()));
         routingTable.put("/registration", Map.of("GET", new RegisterFormHandler()));
-        routingTable.put("/create", Map.of("POST", new CreateUserHandler()));
+        routingTable.put("/create", Map.of("POST", new CreateUserHandler(userRepository)));
         routingTable.put("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler()));
         routingTable.put("/logout", Map.of("POST", new LogoutHandler()));
         routingTable.put("/mypage", Map.of("GET", new MyPageHandler()));
