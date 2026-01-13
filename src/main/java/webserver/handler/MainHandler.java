@@ -26,14 +26,13 @@ public class MainHandler implements Handler {
     }
 
     public ModelAndView handle(Request request, Response response) {
-        User loginUser = AuthUtil.getAuthenticatedUser(request);
-        if(loginUser == null){
-            return new StaticResourceView("/index.html");
-        }
-        logger.debug("session found");
-
         Map<String, Object> model = new HashMap<>();
-        model.put("name", loginUser.getName());
+
+        User loginUser = AuthUtil.getAuthenticatedUser(request);
+        if(loginUser != null){
+            logger.debug("session found");
+            model.put("name", loginUser.getName());
+        }
 
         List<Article> latests = articleRepository.findTopNLessThanByIdDecreasingOrder(1, 100L);
         if(!latests.isEmpty()){
