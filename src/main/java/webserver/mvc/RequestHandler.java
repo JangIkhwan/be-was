@@ -7,6 +7,7 @@ import java.util.Map;
 
 import db.ArticleRepositoryImpl;
 import db.UserRepository;
+import db.UserRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.MethodNotAllowedException;
@@ -25,7 +26,7 @@ public class RequestHandler implements Runnable {
     private Socket connection;
 
     static{
-        UserRepository userRepository = new UserRepository();
+        UserRepository userRepository = new UserRepositoryImpl();
         ArticleRepositoryImpl articleRepository = new ArticleRepositoryImpl();
         routingTable = new HashMap<>();
         routingTable.put("/", Map.of("GET", new MainHandler()));
