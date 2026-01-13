@@ -9,7 +9,7 @@ import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
 import webserver.mvc.ModelAndView;
-import webserver.mvc.StaticResourceView;
+import webserver.mvc.RedirectView;
 
 public class CreateUserHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(CreateUserHandler.class);
@@ -37,6 +37,6 @@ public class CreateUserHandler implements Handler {
 
         logger.debug("create user success");
 
-        return new StaticResourceView("/index.html");
+        return new RedirectView("/");
     }
 }
