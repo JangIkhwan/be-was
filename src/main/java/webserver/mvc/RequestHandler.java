@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import db.ArticleRepository;
 import db.ArticleRepositoryImpl;
 import db.UserRepository;
 import db.UserRepositoryImpl;
@@ -27,9 +28,9 @@ public class RequestHandler implements Runnable {
 
     static{
         UserRepository userRepository = new UserRepositoryImpl();
-        ArticleRepositoryImpl articleRepository = new ArticleRepositoryImpl();
+        ArticleRepository articleRepository = new ArticleRepositoryImpl();
         routingTable = new HashMap<>();
-        routingTable.put("/", Map.of("GET", new MainHandler()));
+        routingTable.put("/", Map.of("GET", new MainHandler(articleRepository, userRepository)));
         routingTable.put("/registration", Map.of("GET", new RegisterFormHandler()));
         routingTable.put("/create", Map.of("POST", new CreateUserHandler(userRepository)));
         routingTable.put("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler(userRepository)));
