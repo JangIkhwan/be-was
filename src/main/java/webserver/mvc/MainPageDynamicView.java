@@ -60,15 +60,16 @@ public class MainPageDynamicView implements ModelAndView{
                 articleTemplate = articleTemplate.replace("${{writer}}", article.getWriterName());
                 articleTemplate = articleTemplate.replace("${{content}}", article.getContent());
 
+                if(!model.containsKey("comments")){
+                    articleTemplate = articleTemplate.replace("${{comments}}", "댓글이 없습니다");
+                    articleTemplate = articleTemplate.replace("${{all-comments-button}}", "");
+                }
+
                 baseHtml = baseHtml.replace("${{article}}", articleTemplate);
+
             }
             else{
                 baseHtml = baseHtml.replace("${{article}}", "첫 게시글을 써주세요");
-            }
-
-            if(!model.containsKey("comments")){
-                baseHtml = baseHtml.replace("${{comments}}", "댓글이 없습니다");
-                baseHtml = baseHtml.replace("${{all-comments-button}}", "");
             }
 
             logger.debug("after baseHtml = {} " , baseHtml);
