@@ -70,4 +70,34 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        String sql = "select password, nickname, email from user_tbl where id = ?";
+
+        try (
+                Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+                PreparedStatement pstmt = con.prepareStatement(sql);
+        ) {
+            logger.debug("DB 연결 성공");
+
+            pstmt.setLong(1, id);
+
+            User user = null;
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                String password = rs.getString("password");
+                String nickname = rs.getString("nickname");
+                String email = rs.getString("email");
+                user = new User(id, password, nickname, email);
+            }
+            return Optional.of(user);
+
+        } catch (SQLException e) {
+            logger.debug("DB 연결 실패", e);
+            throw new RuntimeException(e);
+        }
+    }
 }
