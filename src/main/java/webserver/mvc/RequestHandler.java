@@ -79,17 +79,11 @@ public class RequestHandler implements Runnable {
         }
         catch(StaticResourceNotFoundException e){
             logger.debug("static resouce not found error", e);
-            ModelAndView view = new StaticResourceView("/error/404_error.html");
-            Response response = Response.notFound();
-            view.render(response);
-            responseWriter.write(response);
+            sendErrorPage(responseWriter, Response.notFound(), new StaticResourceView("/error/404_error.html"));
         }
         catch (MethodNotAllowedException e){
             logger.debug("method not allowed error", e);
-            ModelAndView view = new StaticResourceView("/error/405_error.html");
-            Response response = Response.methodNotAllowed();
-            view.render(response);
-            responseWriter.write(response);
+            sendErrorPage(responseWriter, Response.methodNotAllowed(), new StaticResourceView("/error/405_error.html"));
         }
         catch (RequestParsingException e){
             logger.debug("request parsing error", e);
@@ -97,8 +91,13 @@ public class RequestHandler implements Runnable {
         }
         catch (RuntimeException e){
             logger.debug("internal server error", e);
-            responseWriter.write(Response.internalServerError());
+            sendErrorPage(responseWriter, Response.internalServerError(), new StaticResourceView("/error/500_error.html"));
         }
+    }
+
+    private static void sendErrorPage(ResponseWriter responseWriter, Response response, ModelAndView view) {
+        view.render(response);
+        responseWriter.write(response);
     }
 
     private Handler resovleHandler(String uri, String method) {
