@@ -40,7 +40,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     }
 
     @Override
-    public List<Article> findTopNLessThanByIdDecreasingOrder(int limit, int id) {
+    public List<Article> findTopNLessThanByIdDecreasingOrder(int limit, long id) {
         String sql = "select id, creatorId, title, content from article_tbl where id < ? order by id desc limit ?";
 
         try (
@@ -53,7 +53,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             pstmt.setLong(2, limit);
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                while(!rs.next()) {
+                while(rs.next()) {
                     long articleId = rs.getLong("id");
                     long creatorId = rs.getLong("creatorId");
                     String title = rs.getString("title");
@@ -63,6 +63,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             }
             return articles;
         } catch (SQLException e) {
+            logger.error("DB 접속 실패", e);
             throw new RuntimeException(e);
         }
     }

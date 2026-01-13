@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ArticleRepository {
     Article save(Article article);
-    List<Article> findTopNLessThanByIdDecreasingOrder(int limit, int id);
+    List<Article> findTopNLessThanByIdDecreasingOrder(int limit, long id);
 }
