@@ -38,7 +38,17 @@ public class MainPageDynamicView implements ModelAndView{
             logger.debug("before baseHtml = {} " , baseHtml);
 
             if(model.containsKey("name")){
-                baseHtml = baseHtml.replace("${{name}}", (String) model.get("name"));
+                Path templatePath = Paths.get("./src/main/resources/static" + "/template/header_menu_logined.html");
+                String headerMenuTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
+                logger.debug("headerMenuTemplate= {}", headerMenuTemplate);
+                headerMenuTemplate = headerMenuTemplate.replace("${{name}}", (String) model.get("name"));
+                baseHtml = baseHtml.replace("${{header_menu}}", headerMenuTemplate);
+            }
+            else{
+                Path templatePath = Paths.get("./src/main/resources/static" + "/template/header_menu_public.html");
+                String headerMenuTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
+                logger.debug("headerMenuTemplate= {}", headerMenuTemplate);
+                baseHtml = baseHtml.replace("${{header_menu}}", headerMenuTemplate);
             }
 
             if(model.containsKey("article")){
