@@ -106,7 +106,6 @@ public class Response {
     public String toString() {
         return "Response{" +
                 "code=" + code +
-                ", body=" + Arrays.toString(body) +
                 ", contentType='" + contentType + '\'' +
                 ", codeDescription='" + codeDescription + '\'' +
                 ", headers=" + headers +
