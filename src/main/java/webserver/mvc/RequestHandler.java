@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import db.ArticleRepositoryImpl;
 import db.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class RequestHandler implements Runnable {
 
     static{
         UserRepository userRepository = new UserRepository();
+        ArticleRepositoryImpl articleRepository = new ArticleRepositoryImpl();
         routingTable = new HashMap<>();
         routingTable.put("/", Map.of("GET", new MainHandler()));
         routingTable.put("/registration", Map.of("GET", new RegisterFormHandler()));
@@ -33,6 +35,7 @@ public class RequestHandler implements Runnable {
         routingTable.put("/logout", Map.of("POST", new LogoutHandler()));
         routingTable.put("/mypage", Map.of("GET", new MyPageHandler()));
         routingTable.put("/article/create-form", Map.of("GET", new CreateArticleFormHandler()));
+        routingTable.put("/article", Map.of("POST", new CreateArticleHandler(articleRepository)));
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }
@@ -73,21 +76,25 @@ public class RequestHandler implements Runnable {
             responseWriter.write(response);
         }
         catch(StaticResourceNotFoundException e){
+            logger.debug("static resouce not found error", e);
             ModelAndView view = new StaticResourceView("/error/404_error.html");
             Response response = Response.notFound();
             view.render(response);
             responseWriter.write(response);
         }
         catch (MethodNotAllowedException e){
+            logger.debug("method not allowed error", e);
             ModelAndView view = new StaticResourceView("/error/405_error.html");
             Response response = Response.methodNotAllowed();
             view.render(response);
             responseWriter.write(response);
         }
         catch (RequestParsingException e){
+            logger.debug("request parsing error", e);
             responseWriter.write(Response.badRequest());
         }
         catch (RuntimeException e){
+            logger.debug("internal server error", e);
             responseWriter.write(Response.internalServerError());
         }
     }
