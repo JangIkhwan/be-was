@@ -29,7 +29,7 @@ public class RequestHandler implements Runnable {
         routingTable.put("/", Map.of("GET", new MainHandler()));
         routingTable.put("/registration", Map.of("GET", new RegisterFormHandler()));
         routingTable.put("/create", Map.of("POST", new CreateUserHandler(userRepository)));
-        routingTable.put("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler()));
+        routingTable.put("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler(userRepository)));
         routingTable.put("/logout", Map.of("POST", new LogoutHandler()));
         routingTable.put("/mypage", Map.of("GET", new MyPageHandler()));
         routingTable.put("/article/create-form", Map.of("GET", new CreateArticleFormHandler()));
