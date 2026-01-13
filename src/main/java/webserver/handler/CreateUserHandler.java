@@ -1,6 +1,5 @@
 package webserver.handler;
 
-import db.Database;
 import db.UserRepository;
 import model.User;
 import org.slf4j.Logger;
@@ -22,22 +21,19 @@ public class CreateUserHandler implements Handler {
 
     @Override
     public ModelAndView handle(Request request, Response response) {
-        String userId = request.getParameter("email");
         String password = request.getParameter("password");
         String name = request.getParameter("nickname");
         String email = request.getParameter("email");
 
-        logger.debug("userId = {} password = {} name = {} email = {}", userId, password, name, email);
+        logger.debug("password = {} name = {} email = {}", password, name, email);
 
-        if(Database.findUserById(userId) != null){
+        if(userRepository.findByEmail(email).isPresent()){
             throw new BusinessException();
         }
 
         User user = new User(password, name, email);
 
         userRepository.save(user);
-
-        Database.addUser(user);
 
         logger.debug("create user success");
 
