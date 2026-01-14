@@ -26,4 +26,13 @@ public enum FileMimeType {
         }
         return HTML.mimeType;
     }
+
+    public static boolean contains(String mimeType){
+        for(FileMimeType type : FileMimeType.values()){
+            if(mimeType.equals(type.mimeType)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
