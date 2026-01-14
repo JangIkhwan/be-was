@@ -3,8 +3,6 @@ package webserver.mvc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
-import webserver.http.Request;
-import webserver.session.SessionStore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +36,7 @@ public class RequestGenerator {
     private void parseHeader(BufferedReader br) throws IOException {
         String headerLine;
         while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
+            logger.debug("header line : {}", headerLine);
             String[] tokens = headerLine.split(":");
             if(tokens.length == 2){
                 String field = tokens[0].trim();
@@ -45,7 +44,7 @@ public class RequestGenerator {
                 this.headers.put(field, value);
             }
         }
-        logger.debug("headers.size {}", this.headers.size());
+        logger.debug("headers.size : {}", this.headers.size());
     }
 
     private void parseStatusLine(String requestLine) {
@@ -55,17 +54,17 @@ public class RequestGenerator {
         }
 
         this.method = tokens[0];
-        logger.debug("method {}", this.method);
+        logger.debug("method : {}", this.method);
 
         String url = tokens[1];
         tokens = url.split("\\?", 2);
 
         this.path = tokens[0];
-        logger.debug("path = {}", this.path);
+        logger.debug("path : {}", this.path);
 
         if(tokens.length == 2){
             parseParameters(tokens[1]);
-            logger.debug("params.size {}", this.params.size());
+            logger.debug("params.size : {}", this.params.size());
         }
     }
 
@@ -83,6 +82,18 @@ public class RequestGenerator {
 
     private void parseBody(BufferedReader br) throws IOException {
         if(!canParseBody()){
+            return;
+        }
+
+        if(headers.get(CONTENT_TYPE.getHeader()).startsWith("multipart/form-data")){
+            int contentLength = Integer.parseInt(headers.getOrDefault(CONTENT_LENGTH.getHeader(), "0"));
+            if(contentLength == 0){
+                return;
+            }
+            char[] buffer = new char[contentLength];
+            br.read(buffer, 0, contentLength);
+            String body = new String(buffer);
+            logger.debug("body = {}", body);
             return;
         }
 
@@ -118,7 +129,15 @@ public class RequestGenerator {
         return path;
     }
 
-    public Request generate(SessionStore sessionStore){
-        return new Request(method, path, headers, params, sessionStore);
+    public String getMethod() {
+        return method;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
     }
 }

@@ -62,7 +62,7 @@ public class RequestHandler implements Runnable {
         ResponseWriter responseWriter = new ResponseWriter(out);
         try{
             RequestGenerator requestGenerator = new RequestGenerator(in);
-            Request request = requestGenerator.generate(sessionStore);
+            Request request = new Request(requestGenerator.getMethod(), requestGenerator.getPath(), requestGenerator.getHeaders(), requestGenerator.getParams(), sessionStore);
             Response response = new Response();
 
             logger.debug("request parsing complete");
