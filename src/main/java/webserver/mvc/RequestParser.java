@@ -14,15 +14,15 @@ import java.util.Map;
 import static webserver.constant.HttpHeader.CONTENT_LENGTH;
 import static webserver.constant.HttpHeader.CONTENT_TYPE;
 
-public class RequestGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(RequestGenerator.class);
+public class RequestParser {
+    private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
     private static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
     private String path;
     private String method;
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> params = new HashMap<>();
 
-    public RequestGenerator(InputStream in) throws IOException {
+    public RequestParser(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
         String statusLine = br.readLine();

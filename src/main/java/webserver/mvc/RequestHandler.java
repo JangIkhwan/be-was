@@ -61,8 +61,8 @@ public class RequestHandler implements Runnable {
     private void processRequest(OutputStream out, InputStream in) throws IOException {
         ResponseWriter responseWriter = new ResponseWriter(out);
         try{
-            RequestGenerator requestGenerator = new RequestGenerator(in);
-            Request request = new Request(requestGenerator.getMethod(), requestGenerator.getPath(), requestGenerator.getHeaders(), requestGenerator.getParams(), sessionStore);
+            RequestParser requestParser = new RequestParser(in);
+            Request request = new Request(requestParser.getMethod(), requestParser.getPath(), requestParser.getHeaders(), requestParser.getParams(), sessionStore);
             Response response = new Response();
 
             logger.debug("request parsing complete");

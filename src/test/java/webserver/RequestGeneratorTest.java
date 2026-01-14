@@ -3,7 +3,7 @@ package webserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.Request;
-import webserver.mvc.RequestGenerator;
+import webserver.mvc.RequestParser;
 import webserver.session.SessionStore;
 
 import java.io.ByteArrayInputStream;
@@ -23,7 +23,7 @@ class RequestGeneratorTest {
         SessionStore sessionStore = new SessionStore();
 
         // when
-        RequestGenerator requestGenerator = new RequestGenerator(in);
+        RequestParser requestGenerator = new RequestParser(in);
         Request request = requestGenerator.generate(sessionStore);
 
         // then
@@ -39,7 +39,7 @@ class RequestGeneratorTest {
         SessionStore sessionStore = new SessionStore();
 
         // when
-        RequestGenerator requestGenerator = new RequestGenerator(in);
+        RequestParser requestGenerator = new RequestParser(in);
         Request request = requestGenerator.generate(sessionStore);
 
         // then
