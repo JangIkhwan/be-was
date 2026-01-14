@@ -62,6 +62,9 @@ public class RequestHandler implements Runnable {
         ResponseWriter responseWriter = new ResponseWriter(out);
         try{
             RequestParser requestParser = new RequestParser(in);
+
+            logger.debug("multiparts size : {}", requestParser.getMultipartFiles().size());
+
             Request request = new Request(requestParser.getMethod(), requestParser.getPath(), requestParser.getHeaders(), requestParser.getParams(), requestParser.getMultipartFiles(), sessionStore);
             Response response = new Response();
 

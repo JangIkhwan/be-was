@@ -1,6 +1,7 @@
 package webserver.mvc;
 
-import webserver.constant.FileMimeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.exception.CannotParseMultipartException;
 
 import java.io.ByteArrayInputStream;
@@ -12,21 +13,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static webserver.constant.HttpHeader.CONTENT_LENGTH;
 import static webserver.constant.HttpHeader.CONTENT_TYPE;
 
 public class MultipartRequestParser {
-    public void parse(InputStream in, Map<String, String> headers, List<MultipartFile> multipartFiles, Map<String, String> params) throws IOException {
-        int contentLength = Integer.parseInt(headers.getOrDefault(CONTENT_LENGTH.getHeader(), "0"));
-        if (contentLength == 0) {
-            return;
-        }
+    private static final Logger logger = LoggerFactory.getLogger(MultipartRequestParser.class);
 
+    public void parse(byte[] bodyBytes, Map<String, String> headers, List<MultipartFile> multipartFiles, Map<String, String> params) throws IOException {
         // 바운더리 찾기
         String boundary = parseBoundary(headers);
 
+        logger.debug("multipart length : {}" , bodyBytes.length);
+
         // 바운더리 기준으로 자르고 파트들을 파싱
-        byte[] bodyBytes = in.readNBytes(contentLength);
         byte[] boundaryBytes = ("--" + boundary).getBytes(StandardCharsets.ISO_8859_1);
         byte[] endBoundaryBytes = ("--" + boundary + "--").getBytes(StandardCharsets.ISO_8859_1);
 
@@ -38,6 +36,8 @@ public class MultipartRequestParser {
         int startIndex = firstBoundary + boundaryBytes.length + 2;
         for (int i = boundaryBytes.length; i < bodyBytes.length - endBoundaryBytes.length; i++) {
             if (matched(i, bodyBytes, endBoundaryBytes)) {
+                byte[] partBytes = Arrays.copyOfRange(bodyBytes, startIndex, i);
+                parsePart(partBytes, multipartFiles, params);
                 break;
             }
             if (matched(i, bodyBytes, boundaryBytes)) {
@@ -104,13 +104,18 @@ public class MultipartRequestParser {
         byte[] bodyBytes = Arrays.copyOfRange(partBytes, headerEnd + 4, partBytes.length);
 
         String headersText = new String(headerBytes, StandardCharsets.ISO_8859_1);
+
+        logger.debug("headerText : {}", headersText);
+
         Map<String, String> partHeaders = parsePartHeaders(headersText);
 
         if (isFile(partHeaders)) {
+            logger.debug("added multipartFile");
             String filename = extractFilename(partHeaders);
             InputStream inputStream = new ByteArrayInputStream(bodyBytes);
             multipartFiles.add(new MultipartFile(filename, inputStream));
         } else {
+            logger.debug("added form");
             String name = extractName(partHeaders);
             String value = new String(bodyBytes, StandardCharsets.UTF_8);
             params.put(name, value);
@@ -121,19 +126,21 @@ public class MultipartRequestParser {
         HashMap<String, String> headers = new HashMap<>();
         String[] partHeaderLines = headersText.split("\r\n");
         for (String line : partHeaderLines) {
+            logger.debug("part header line : {}", line);
             int idx = line.indexOf(":");
             if (idx < 0) {
                 continue;
             }
             String field = line.substring(0, idx).trim();
-            String value = line.substring(idx).trim();
+            String value = line.substring(idx + 1).trim();
             headers.put(field, value);
         }
         return headers;
     }
 
     private boolean isFile(Map<String, String> partHeaders) {
-        return FileMimeType.contains(partHeaders.get(CONTENT_TYPE.getHeader()));
+        String disposition = partHeaders.get("Content-Disposition");
+        return disposition != null && disposition.contains("filename");
     }
 
     private String extractName(Map<String, String> headers) {
@@ -160,13 +167,16 @@ public class MultipartRequestParser {
 
         for (String token : disposition.split(";")) {
             token = token.trim();
-            if (token.startsWith("filename")) {
-                String[] kv = token.split("=", 2);
-                String filename = kv[1].trim();
+
+            if (token.startsWith("filename=")) {
+                String filename = token.substring("filename=".length()).trim();
+
                 if (filename.startsWith("\"") && filename.endsWith("\"")) {
                     filename = filename.substring(1, filename.length() - 1);
                 }
-                return filename;
+
+                byte[] rawBytes = filename.getBytes(StandardCharsets.ISO_8859_1);
+                return new String(rawBytes, StandardCharsets.UTF_8);
             }
         }
         return null;

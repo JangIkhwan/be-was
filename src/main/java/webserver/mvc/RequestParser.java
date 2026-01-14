@@ -23,64 +23,100 @@ public class RequestParser {
     private MultipartRequestParser multipartParser = new MultipartRequestParser();
 
     public RequestParser(InputStream in) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        BufferedInputStream bin = new BufferedInputStream(in);
 
-        parseRequestLine(br);
-        parseHeader(br);
-        parseBody(in);
+        byte[] headerBytes = readUntilHeaderEnd(bin);
+        parseRequestLineAndHeaders(headerBytes);
+
+        byte[] bodyBytes = readBody(bin);
+
+        parseBody(bodyBytes);
     }
 
-    private void parseHeader(BufferedReader br) throws IOException {
-        String headerLine;
-        while ((headerLine = br.readLine()) != null && !headerLine.isEmpty()) {
-            logger.debug("header line : {}", headerLine);
-            int idx = headerLine.indexOf(':');
-            if (idx > 0) {
-                String field = headerLine.substring(0, idx).trim();
-                String value = headerLine.substring(idx + 1).trim();
-                headers.put(field, value);
+    private byte[] readUntilHeaderEnd(BufferedInputStream in) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int prev = -1, curr;
+        while ((curr = in.read()) != -1) {
+            buffer.write(curr);
+
+            if (prev == '\r' && curr == '\n') {
+                byte[] bytes = buffer.toByteArray();
+                int len = bytes.length;
+                if (len >= 4 &&
+                        bytes[len - 4] == '\r' &&
+                        bytes[len - 3] == '\n' &&
+                        bytes[len - 2] == '\r' &&
+                        bytes[len - 1] == '\n') {
+                    break;
+                }
             }
+            prev = curr;
         }
-        logger.debug("headers.size : {}", this.headers.size());
+        return buffer.toByteArray();
     }
 
-    private void parseRequestLine(BufferedReader br) throws IOException {
-        String requestLine = br.readLine();
-        logger.debug("request line {}", requestLine);
+    private void parseRequestLineAndHeaders(byte[] headerBytes) {
+        String headerText = new String(headerBytes, StandardCharsets.US_ASCII);
+        String[] lines = headerText.split("\r\n");
 
-        String[] tokens = requestLine.split(" ");
-        if (tokens.length != 3) {
+        // Request Line
+        String[] requestLine = lines[0].split(" ");
+        if (requestLine.length != 3) {
             throw new RequestParsingException();
         }
 
-        this.method = tokens[0];
-        logger.debug("method : {}", this.method);
+        method = requestLine[0];
+        parsePathAndQuery(requestLine[1]);
 
-        String url = tokens[1];
-        tokens = url.split("\\?", 2);
+        // Headers
+        for (int i = 1; i < lines.length; i++) {
+            int idx = lines[i].indexOf(":");
+            if (idx > 0) {
+                String key = lines[i].substring(0, idx).trim();
+                String value = lines[i].substring(idx + 1).trim();
+                headers.put(key, value);
+            }
+        }
 
-        this.path = tokens[0];
-        logger.debug("path : {}", this.path);
+        logger.debug("method={}", method);
+        logger.debug("path={}", path);
+        logger.debug("headers={}", headers);
+    }
+
+    private void parsePathAndQuery(String url) {
+        String[] tokens = url.split("\\?", 2);
+        path = tokens[0];
 
         if (tokens.length == 2) {
-            parseParameters(tokens[1]);
-            logger.debug("params.size : {}", this.params.size());
+            parseQueryString(tokens[1]);
         }
     }
 
-    private void parseParameters(String rawQueryString) {
-        String[] rawQueryParams = rawQueryString.split("&");
-        for (String rawQueryParam : rawQueryParams) {
-            String[] tokens = rawQueryParam.split("=");
-            if (tokens.length == 2) {
-                String key = tokens[0].trim();
-                String value = tokens[1].trim();
-                this.params.put(key, value);
+    private void parseQueryString(String query) {
+        for (String pair : query.split("&")) {
+            String[] kv = pair.split("=", 2);
+            if (kv.length == 2) {
+                params.put(kv[0], kv[1]);
             }
         }
     }
 
-    private void parseBody(InputStream in) throws IOException {
+    private byte[] readBody(BufferedInputStream in) throws IOException {
+        String cl = headers.get("Content-Length");
+        if (cl == null) {
+            return null;
+        }
+
+        int contentLength = Integer.parseInt(cl);
+        if (contentLength <= 0) {
+            return null;
+        }
+
+        return in.readNBytes(contentLength);
+    }
+
+    private void parseBody(byte[] in) throws IOException {
         if (!canParseBody()) {
             return;
         }
@@ -107,19 +143,21 @@ public class RequestParser {
         return headers.get(CONTENT_TYPE.getHeader()).equals(FORM_URLENCODED);
     }
 
-    private void parseUrlEncodedBody(InputStream in) throws IOException {
+    private void parseUrlEncodedBody(byte[] bodyBytes) throws IOException {
         int contentLength = Integer.parseInt(headers.getOrDefault(CONTENT_LENGTH.getHeader(), "0"));
         if (contentLength == 0) {
             return;
         }
 
-        byte[] bodyBytes = in.readNBytes(contentLength);
         String body = new String(bodyBytes, StandardCharsets.UTF_8);
         logger.debug("body = {}", body);
 
         String[] inputs = body.split("&");
         for (String input : inputs) {
             String[] nameAndValue = input.split("=");
+            if(nameAndValue.length != 2){
+                continue;
+            }
             String name = nameAndValue[0].trim();
             String value = nameAndValue[1].trim();
             this.params.put(name, value);
