@@ -4,13 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static webserver.constant.HttpHeader.CONTENT_LENGTH;
 import static webserver.constant.HttpHeader.CONTENT_TYPE;
@@ -18,10 +14,13 @@ import static webserver.constant.HttpHeader.CONTENT_TYPE;
 public class RequestParser {
     private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
     private static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
     private String path;
     private String method;
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> params = new HashMap<>();
+    private List<MultipartFile> multipartFiles = new ArrayList<>();
+    private MultipartRequestParser multipartParser = new MultipartRequestParser();
 
     public RequestParser(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -86,6 +85,11 @@ public class RequestParser {
             return;
         }
 
+        if (isMultipart()) {
+            multipartParser.parse(in, headers, multipartFiles, params);
+            return;
+        }
+
         if (isFormUrlEncoded()) {
             parseUrlEncodedBody(in);
         }
@@ -93,6 +97,10 @@ public class RequestParser {
 
     private boolean canParseBody() {
         return headers.containsKey(CONTENT_LENGTH.getHeader()) && headers.containsKey(CONTENT_TYPE.getHeader());
+    }
+
+    private boolean isMultipart() {
+        return headers.get(CONTENT_TYPE.getHeader()).startsWith(MULTIPART_FORM_DATA);
     }
 
     private boolean isFormUrlEncoded() {
@@ -132,5 +140,9 @@ public class RequestParser {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public List<MultipartFile> getMultipartFiles() {
+        return multipartFiles;
     }
 }
