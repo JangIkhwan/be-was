@@ -1,8 +1,10 @@
 package webserver.http;
 
+import webserver.mvc.MultipartFile;
 import webserver.session.SessionStore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static webserver.constant.HttpHeader.COOKIE;
@@ -12,17 +14,19 @@ public class Request {
     private static final String COOKIE_KEY_AND_VALUE_DELIMITER = "=";
     private String method;
     private String path;
-    private Map<String, String> header;
+    private Map<String, String> headers;
     private Map<String, String> params;
     private Map<String, String> cookies;
+    private List<MultipartFile> multipartFiles;
     private SessionStore sessionStore;
 
-    public Request(String method, String path, Map<String, String> header, Map<String, String> params, SessionStore sessionStore) {
+    public Request(String method, String path, Map<String, String> header, Map<String, String> params, List<MultipartFile> multipartFiles, SessionStore sessionStore) {
         this.method = method;
         this.path = path;
-        this.header = header;
+        this.headers = header;
         this.params = params;
         this.cookies = parseCookie(header);
+        this.multipartFiles = multipartFiles;
         this.sessionStore = sessionStore;
     }
 
@@ -65,12 +69,17 @@ public class Request {
         return cookies.get(key);
     }
 
+    public List<MultipartFile> getMultipartFiles() {
+        return multipartFiles;
+    }
+
+
     @Override
     public String toString() {
         return "Request{" +
                 "method='" + method + '\'' +
                 ", path='" + path + '\'' +
-                ", header=" + header +
+                ", header=" + headers +
                 ", params=" + params +
                 ", sessionStore=" + sessionStore +
                 '}';
