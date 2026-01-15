@@ -73,6 +73,10 @@ public class Request {
         return multipartFiles;
     }
 
+    public void setParameter(String name, String value) {
+        params.put(name, value);
+    }
+
 
     @Override
     public String toString() {
