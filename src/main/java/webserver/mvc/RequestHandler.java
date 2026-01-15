@@ -38,7 +38,7 @@ public class RequestHandler implements Runnable {
         routingTable.add(new SimpleRouting("/create", Map.of("POST", new CreateUserHandler(userRepository))));
         routingTable.add(new SimpleRouting("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler(userRepository))));
         routingTable.add(new SimpleRouting("/logout", Map.of("POST", new LogoutHandler())));
-        routingTable.add(new SimpleRouting("/mypage", Map.of("GET", new MyPageHandler())));
+        routingTable.add(new SimpleRouting("/mypage", Map.of("GET", new MyPageHandler(userRepository), "PATCH", new PatchMyPageHandler(userRepository))));
         routingTable.add(new SimpleRouting("/article/create-form", Map.of("GET", new CreateArticleFormHandler())));
         routingTable.add(new SimpleRouting("/article", Map.of("POST", new CreateArticleHandler(articleRepository))));
         routingTable.add(new PathVariableRouting("/uploads/images/{imageUrl}", Map.of("GET", new GetImageHandler())));
