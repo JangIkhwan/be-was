@@ -4,8 +4,8 @@ import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
 import webserver.mvc.ModelAndView;
-import webserver.mvc.RedirectView;
-import webserver.mvc.StaticResourceView;
+import webserver.view.RedirectView;
+import webserver.view.StaticResourceView;
 import webserver.util.AuthUtil;
 
 public class CreateArticleFormHandler implements Handler {

@@ -10,6 +10,8 @@ import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.*;
 import webserver.util.AuthUtil;
+import webserver.view.MainPageDynamicView;
+import webserver.mvc.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;

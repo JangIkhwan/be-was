@@ -1,16 +1,17 @@
-package webserver.mvc;
+package webserver.view;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.constant.FileMimeType;
 import webserver.exception.StaticResourceNotFoundException;
 import webserver.http.Response;
+import webserver.mvc.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class StaticResourceView implements ModelAndView{
+public class StaticResourceView implements ModelAndView {
     private static final Logger logger = LoggerFactory.getLogger(StaticResourceView.class);
     private String viewName;
 

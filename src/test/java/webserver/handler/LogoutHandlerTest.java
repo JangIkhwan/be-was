@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.ModelAndView;
-import webserver.mvc.RedirectView;
+import webserver.view.RedirectView;
 import webserver.session.SessionStore;
 
 import java.util.HashMap;

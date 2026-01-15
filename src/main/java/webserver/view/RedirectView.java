@@ -1,6 +1,7 @@
-package webserver.mvc;
+package webserver.view;
 
 import webserver.http.Response;
+import webserver.mvc.ModelAndView;
 
 public class RedirectView implements ModelAndView {
     private String viewName;

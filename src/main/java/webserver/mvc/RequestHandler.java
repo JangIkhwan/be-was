@@ -19,6 +19,7 @@ import webserver.handler.*;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.session.SessionStore;
+import webserver.view.StaticResourceView;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

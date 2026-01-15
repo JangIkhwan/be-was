@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
-import webserver.mvc.RedirectView;
+import webserver.view.RedirectView;
 import webserver.util.AuthUtil;
 import webserver.session.SessionStore;
 import webserver.mvc.ModelAndView;

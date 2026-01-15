@@ -1,6 +1,5 @@
 package webserver.handler;
 
-import db.Database;
 import db.UserRepository;
 import model.User;
 import org.slf4j.Logger;
@@ -8,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
-import webserver.mvc.RedirectView;
-import webserver.mvc.StaticResourceView;
+import webserver.view.RedirectView;
+import webserver.view.StaticResourceView;
 import webserver.session.SessionStore;
 import webserver.mvc.ModelAndView;
 

@@ -1,4 +1,4 @@
-package webserver.mvc;
+package webserver.view;
 
 import model.Article;
 import org.slf4j.Logger;
@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import webserver.constant.FileMimeType;
 import webserver.exception.StaticResourceNotFoundException;
 import webserver.http.Response;
+import webserver.mvc.ModelAndView;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

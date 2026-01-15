@@ -6,7 +6,7 @@ import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
 import webserver.mvc.ModelAndView;
-import webserver.mvc.StaticResourceView;
+import webserver.view.StaticResourceView;
 
 public class LoginFormHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(LoginFormHandler.class);

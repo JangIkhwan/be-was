@@ -4,7 +4,7 @@ import webserver.exception.StaticResourceNotFoundException;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
-import webserver.mvc.UploadedFileView;
+import webserver.view.UploadedFileView;
 import webserver.mvc.ModelAndView;
 
 public class GetImageHandler implements Handler {
