@@ -5,10 +5,7 @@ import model.Article;
 import model.User;
 import webserver.http.Request;
 import webserver.http.Response;
-import webserver.mvc.Handler;
-import webserver.mvc.ModelAndView;
-import webserver.mvc.MultipartFile;
-import webserver.mvc.RedirectView;
+import webserver.mvc.*;
 import webserver.util.AuthUtil;
 
 import java.io.IOException;
@@ -37,8 +34,7 @@ public class CreateArticleHandler implements Handler {
         String content = request.getParameter("content");
 
         if(request.getMultipartFiles().size() != 1){
-            // todo 게시글 작성폼에서 에러문구 출력하도록 수정
-            throw new BadRequestException();
+            return new StaticResourceView("/article/error.html");
         }
 
         MultipartFile multipartFile = request.getMultipartFiles().get(0);
