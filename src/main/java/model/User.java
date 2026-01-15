@@ -7,12 +7,14 @@ public class User {
     private String password;
     private String name;
     private String email;
+    private String imageUrl;
 
-    public User(Long id, String password, String name, String email) {
+    public User(Long id, String password, String name, String email, String imageUrl) {
         this.id = id;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.imageUrl = imageUrl;
     }
 
     public User(String password, String name, String email) {
@@ -50,5 +52,16 @@ public class User {
     @Override
     public String toString() {
         return "User [userId=" + id + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+    }
+
+    public void changeProfileImage(String imageUrl) {
+        if(imageUrl == null){
+            throw new BusinessException();
+        }
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
