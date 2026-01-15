@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import webserver.exception.RequestParsingException;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -86,7 +87,7 @@ public class RequestParser {
 
     private void parsePathAndQuery(String url) {
         String[] tokens = url.split("\\?", 2);
-        path = tokens[0];
+        path = URLDecoder.decode(tokens[0], StandardCharsets.UTF_8);;
 
         if (tokens.length == 2) {
             parseQueryString(tokens[1]);
