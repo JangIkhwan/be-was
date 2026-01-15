@@ -2,7 +2,8 @@ package webserver.mvc;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import db.ArticleRepository;
@@ -21,7 +22,7 @@ import webserver.session.SessionStore;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static Map<String, Map<String, Handler>> routingTable;
+    private static List<Routing> routingTable;
     private static Handler staticResourceHandler;
     private static SessionStore sessionStore;
     private Socket connection;
@@ -29,15 +30,18 @@ public class RequestHandler implements Runnable {
     static{
         UserRepository userRepository = new UserRepositoryImpl();
         ArticleRepository articleRepository = new ArticleRepositoryImpl();
-        routingTable = new HashMap<>();
-        routingTable.put("/", Map.of("GET", new MainHandler(articleRepository, userRepository)));
-        routingTable.put("/registration", Map.of("GET", new RegisterFormHandler()));
-        routingTable.put("/create", Map.of("POST", new CreateUserHandler(userRepository)));
-        routingTable.put("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler(userRepository)));
-        routingTable.put("/logout", Map.of("POST", new LogoutHandler()));
-        routingTable.put("/mypage", Map.of("GET", new MyPageHandler()));
-        routingTable.put("/article/create-form", Map.of("GET", new CreateArticleFormHandler()));
-        routingTable.put("/article", Map.of("POST", new CreateArticleHandler(articleRepository)));
+
+        routingTable = new ArrayList<>();
+        routingTable.add(new SimpleRouting("/", Map.of("GET", new MainHandler(articleRepository, userRepository))));
+        routingTable.add(new SimpleRouting("/registration", Map.of("GET", new RegisterFormHandler())));
+        routingTable.add(new SimpleRouting("/create", Map.of("POST", new CreateUserHandler(userRepository))));
+        routingTable.add(new SimpleRouting("/login", Map.of("GET", new LoginFormHandler(), "POST", new LoginHandler(userRepository))));
+        routingTable.add(new SimpleRouting("/logout", Map.of("POST", new LogoutHandler())));
+        routingTable.add(new SimpleRouting("/mypage", Map.of("GET", new MyPageHandler())));
+        routingTable.add(new SimpleRouting("/article/create-form", Map.of("GET", new CreateArticleFormHandler())));
+        routingTable.add(new SimpleRouting("/article", Map.of("POST", new CreateArticleHandler(articleRepository))));
+        routingTable.add(new PathVariableRouting("/uploads/images/{imageUrl}", Map.of("GET", new GetImageHandler())));
+
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
     }
@@ -71,7 +75,7 @@ public class RequestHandler implements Runnable {
             logger.debug("request parsing complete");
             logger.debug("request={}", request);
 
-            Handler handler = resovleHandler(request.getPath(), request.getMethod());
+            Handler handler = resovleHandler(request);
             ModelAndView mav = handler.handle(request, response);
 
             mav.render(response);
@@ -104,14 +108,14 @@ public class RequestHandler implements Runnable {
         responseWriter.write(response);
     }
 
-    private Handler resovleHandler(String uri, String method) {
-        Map<String, Handler> methodHandlers = routingTable.get(uri);
-        if(methodHandlers != null){
-            Handler handler = methodHandlers.get(method);
-            if(handler == null){
-                throw new MethodNotAllowedException();
+    private Handler resovleHandler(Request request) {
+        for(Routing routing : routingTable){
+            if(routing.supportsUri(request.getPath())){
+                if(!routing.supportsMethod(request.getMethod())){
+                    throw new MethodNotAllowedException();
+                }
+                return routing.resolveHandler(request);
             }
-            return handler;
         }
         return staticResourceHandler;
     }
