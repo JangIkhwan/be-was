@@ -15,7 +15,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     private static final Logger logger = LoggerFactory.getLogger(ArticleRepositoryImpl.class);
 
     public Article save(Article article) {
-        String sql = "insert into article_tbl(creatorId, title, content) values(?, ?, ?)";
+        String sql = "insert into article_tbl(creatorId, title, content, imageUrl) values(?, ?, ?, ?)";
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
                 PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -23,6 +23,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             pstmt.setLong(1, article.getCreatorId());
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContent());
+            pstmt.setString(3, article.getImageUrl());
 
             pstmt.executeUpdate();
 
@@ -41,7 +42,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
 
     @Override
     public List<Article> findTopNLessThanByIdDecreasingOrder(int limit, long id) {
-        String sql = "select id, creatorId, title, content from article_tbl where id < ? order by id desc limit ?";
+        String sql = "select id, creatorId, title, content, image_url from article_tbl where id < ? order by id desc limit ?";
 
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
@@ -58,7 +59,8 @@ public class ArticleRepositoryImpl implements ArticleRepository {
                     long creatorId = rs.getLong("creatorId");
                     String title = rs.getString("title");
                     String content = rs.getString("content");
-                    articles.add(new Article(articleId, creatorId, title, content));
+                    String imageUrl = rs.getString("image_url");
+                    articles.add(new Article(articleId, creatorId, title, content, imageUrl));
                 }
             }
             return articles;
