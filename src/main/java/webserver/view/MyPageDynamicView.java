@@ -41,6 +41,13 @@ public class MyPageDynamicView implements ModelAndView {
                 baseHtml = baseHtml.replace("${{name}}", (String) model.get("name"));
             }
 
+            if (model.containsKey("profile_image")) {
+                baseHtml = baseHtml.replace("${{profile_image}}", (String) model.get("profile_image"));
+            }
+            else{
+                baseHtml = baseHtml.replace("${{profile_image}}", "");
+            }
+
             logger.debug("after baseHtml = {} ", baseHtml);
 
             byte[] body = baseHtml.getBytes(StandardCharsets.UTF_8);
