@@ -8,17 +8,11 @@ import webserver.http.Response;
 import webserver.mvc.*;
 import webserver.util.AuthUtil;
 import webserver.mvc.ModelAndView;
+import webserver.util.MultipartFileUtil;
 import webserver.view.RedirectView;
 import webserver.view.StaticResourceView;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.UUID;
 
 public class CreateArticleHandler implements Handler {
     private final ArticleRepository articleRepository;
@@ -44,7 +38,7 @@ public class CreateArticleHandler implements Handler {
 
         String imageUrl = null;
         try {
-            imageUrl = saveFile(multipartFile);
+            imageUrl = MultipartFileUtil.saveFile("uploads/images", multipartFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,26 +46,5 @@ public class CreateArticleHandler implements Handler {
         articleRepository.save(new Article(user.getId(), title, content, imageUrl));
 
         return new RedirectView("/");
-    }
-
-    private String saveFile(MultipartFile multipartFile) throws IOException {
-        InputStream in = multipartFile.getInputStream();
-        String filename = UUID.randomUUID().toString() + multipartFile.getFilename();
-        String projectRoot = System.getProperty("user.dir");
-        Path uploadDir = Paths.get(projectRoot, "uploads", "images");
-
-        Files.createDirectories(uploadDir);
-
-        Path target = uploadDir.resolve(filename);
-
-        try (OutputStream out = Files.newOutputStream(
-                target,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.TRUNCATE_EXISTING)) {
-
-            in.transferTo(out);
-        }
-
-        return "/uploads/images" + filename;
     }
 }
