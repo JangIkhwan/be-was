@@ -3,7 +3,6 @@ package webserver.handler;
 import db.ArticleRepository;
 import model.Article;
 import model.User;
-import webserver.exception.BadRequestException;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.Handler;
@@ -58,7 +57,7 @@ public class CreateArticleHandler implements Handler {
 
     private String saveFile(MultipartFile multipartFile) throws IOException {
         InputStream in = multipartFile.getInputStream();
-        String filename = multipartFile.getFilename() + UUID.randomUUID().toString();
+        String filename = UUID.randomUUID().toString() + multipartFile.getFilename();
         String projectRoot = System.getProperty("user.dir");
         Path uploadDir = Paths.get(projectRoot, "uploads", "images");
 
@@ -74,6 +73,6 @@ public class CreateArticleHandler implements Handler {
             in.transferTo(out);
         }
 
-        return filename;
+        return "/uploads/images" + filename;
     }
 }
