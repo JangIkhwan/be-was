@@ -31,19 +31,28 @@ public class PatchMyPageHandler implements Handler {
         User userByEmail = userRepository.findByEmail(cachedUser.getEmail())
                 .orElseThrow(() -> new BusinessException());
 
-        if (request.getMultipartFiles().size() != 1) {
-            return new RedirectView("/mypage");
-        }
-        MultipartFile multipartFile = request.getMultipartFiles().get(0);
+        if(request.getMultipartFiles().size() == 1){
+            MultipartFile multipartFile = request.getMultipartFiles().get(0);
 
-        String imageUrl = null;
-        try {
-            imageUrl = MultipartFileUtil.saveFile("uploads/images", multipartFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            String imageUrl = null;
+            try {
+                imageUrl = MultipartFileUtil.saveFile("uploads/images", multipartFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            userByEmail.changeProfileImage(imageUrl);
         }
 
-        userByEmail.changeProfileImage(imageUrl);
+        String name = request.getParameter("name");
+        if(name != null || name.length() >= 4){
+            userByEmail.changeName(name);
+        }
+
+        String password = request.getParameter("password");
+        if(password != null || password.length() >= 4){
+            userByEmail.changePassword(password);
+        }
 
         userRepository.update(userByEmail);
 

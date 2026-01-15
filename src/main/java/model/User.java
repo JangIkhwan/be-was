@@ -55,13 +55,19 @@ public class User {
     }
 
     public void changeProfileImage(String imageUrl) {
-        if(imageUrl == null){
-            throw new BusinessException();
-        }
+
         this.imageUrl = imageUrl;
     }
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
     }
 }
