@@ -14,7 +14,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
     public User save(User user) {
-        String sql = "insert into user_tbl(password, nickname, email) values(?, ?, ?)";
+        String sql = "insert into user_tbl(password, nickname, email, image_url) values(?, ?, ?)";
 
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
@@ -25,6 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
             pstmt.setString(1, user.getPassword());
             pstmt.setString(2, user.getName());
             pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getImageUrl());
 
             pstmt.executeUpdate();
 
@@ -43,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        String sql = "select id, password, nickname from user_tbl where email = ?";
+        String sql = "select id, password, nickname, image_url from user_tbl where email = ?";
 
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
@@ -61,7 +62,8 @@ public class UserRepositoryImpl implements UserRepository {
                 long id = rs.getLong("id");
                 String password = rs.getString("password");
                 String nickname = rs.getString("nickname");
-                user = new User(id, password, nickname, email);
+                String imageUrl = rs.getString("image_url");
+                user = new User(id, password, nickname, email, imageUrl);
             }
             return Optional.of(user);
 
@@ -73,7 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) {
-        String sql = "select password, nickname, email from user_tbl where id = ?";
+        String sql = "select password, nickname, email, image_url from user_tbl where id = ?";
 
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
@@ -91,7 +93,8 @@ public class UserRepositoryImpl implements UserRepository {
                 String password = rs.getString("password");
                 String nickname = rs.getString("nickname");
                 String email = rs.getString("email");
-                user = new User(id, password, nickname, email);
+                String imageUrl = rs.getString("image_url");
+                user = new User(id, password, nickname, email, imageUrl);
             }
             return Optional.of(user);
 
@@ -100,4 +103,34 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public User update(User user) {
+        String sql = "update user_tbl set password = ?, nickname = ?, email = ?, image_url = ? where id = ?";
+
+        try (
+                Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+                PreparedStatement pstmt = con.prepareStatement(sql);
+        ) {
+            logger.debug("DB 연결 성공");
+
+            pstmt.setString(1, user.getPassword());
+            pstmt.setString(2, user.getName());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getImageUrl());
+            pstmt.setLong(5, user.getId());
+
+            int updatedRows = pstmt.executeUpdate();
+
+            if (updatedRows == 0) {
+                throw new SQLException("업데이트 실패: 해당 id 없음");
+            }
+
+            return user;
+        } catch (SQLException e) {
+            logger.error("DB 업데이트 실패", e);
+            throw new RuntimeException(e);
+        }
+    }
+
 }
