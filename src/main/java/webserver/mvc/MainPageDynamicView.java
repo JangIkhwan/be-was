@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-public class MainPageDynamicView implements ModelAndView{
+public class MainPageDynamicView implements ModelAndView {
     private static final Logger logger = LoggerFactory.getLogger(MainPageDynamicView.class);
     private Map<String, Object> model;
     private String viewName;
@@ -31,27 +31,26 @@ public class MainPageDynamicView implements ModelAndView{
 
     @Override
     public void render(Response response) {
-        try{
+        try {
             Path filePath = Paths.get("./src/main/resources/static" + getViewName());
             String baseHtml = Files.readString(filePath, StandardCharsets.UTF_8);
 
-            logger.debug("before baseHtml = {} " , baseHtml);
+            logger.debug("before baseHtml = {} ", baseHtml);
 
-            if(model.containsKey("name")){
+            if (model.containsKey("name")) {
                 Path templatePath = Paths.get("./src/main/resources/static" + "/template/header_menu_logined.html");
                 String headerMenuTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
                 logger.debug("headerMenuTemplate= {}", headerMenuTemplate);
                 headerMenuTemplate = headerMenuTemplate.replace("${{name}}", (String) model.get("name"));
                 baseHtml = baseHtml.replace("${{header_menu}}", headerMenuTemplate);
-            }
-            else{
+            } else {
                 Path templatePath = Paths.get("./src/main/resources/static" + "/template/header_menu_public.html");
                 String headerMenuTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
                 logger.debug("headerMenuTemplate= {}", headerMenuTemplate);
                 baseHtml = baseHtml.replace("${{header_menu}}", headerMenuTemplate);
             }
 
-            if(model.containsKey("article")){
+            if (model.containsKey("article")) {
                 Article article = (Article) model.get("article");
                 Path templatePath = Paths.get("./src/main/resources/static" + "/template/article.html");
                 String articleTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
@@ -59,26 +58,25 @@ public class MainPageDynamicView implements ModelAndView{
 
                 articleTemplate = articleTemplate.replace("${{writer}}", article.getWriterName());
                 articleTemplate = articleTemplate.replace("${{content}}", article.getContent());
+                articleTemplate = articleTemplate.replace("${{image_url}}", article.getImageUrl());
 
-                if(!model.containsKey("comments")){
+                if (!model.containsKey("comments")) {
                     articleTemplate = articleTemplate.replace("${{comments}}", "댓글이 없습니다");
                     articleTemplate = articleTemplate.replace("${{all-comments-button}}", "");
                 }
 
                 baseHtml = baseHtml.replace("${{article}}", articleTemplate);
 
-            }
-            else{
+            } else {
                 baseHtml = baseHtml.replace("${{article}}", "첫 게시글을 써주세요");
             }
 
-            logger.debug("after baseHtml = {} " , baseHtml);
+            logger.debug("after baseHtml = {} ", baseHtml);
 
             byte[] body = baseHtml.getBytes(StandardCharsets.UTF_8);
             String contentType = FileMimeType.resolveMimeType(getViewName());
             response.setOk(body, contentType);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("error occurred while reading static resource");
             throw new StaticResourceNotFoundException();
         }
