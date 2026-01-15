@@ -1,12 +1,13 @@
 package webserver.handler;
 
+import model.User;
 import webserver.http.Request;
 import webserver.http.Response;
-import webserver.mvc.Handler;
-import webserver.mvc.RedirectView;
-import webserver.mvc.StaticResourceView;
+import webserver.mvc.*;
+import webserver.view.MyPageDynamicView;
 import webserver.util.AuthUtil;
-import webserver.mvc.ModelAndView;
+
+import java.util.HashMap;
 
 public class MyPageHandler implements Handler {
     @Override
@@ -14,6 +15,11 @@ public class MyPageHandler implements Handler {
         if(!AuthUtil.isAuthenticatedUser(request)){
             return new RedirectView("/login");
         }
-        return new StaticResourceView("/mypage/index.html");
+
+        User user = AuthUtil.getAuthenticatedUser(request);
+
+        HashMap<String, Object> model = new HashMap<>();
+        model.put("name", user.getName());
+        return new MyPageDynamicView(model, "/mypage/index.html");
     }
 }
