@@ -11,8 +11,8 @@ import db.UserRepository;
 import db.UserRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.exception.BadRequestException;
 import webserver.exception.MethodNotAllowedException;
-import webserver.exception.RequestParsingException;
 import webserver.exception.StaticResourceNotFoundException;
 import webserver.handler.*;
 import webserver.http.Request;
@@ -88,9 +88,10 @@ public class RequestHandler implements Runnable {
             logger.debug("method not allowed error", e);
             sendErrorPage(responseWriter, Response.methodNotAllowed(), new StaticResourceView("/error/405_error.html"));
         }
-        catch (RequestParsingException e){
+        catch (BadRequestException e){
             logger.debug("request parsing error", e);
-            responseWriter.write(Response.badRequest());
+            sendErrorPage(responseWriter, Response.badRequest(), new StaticResourceView("/error/400_error.html"));
+
         }
         catch (RuntimeException e){
             logger.debug("internal server error", e);
