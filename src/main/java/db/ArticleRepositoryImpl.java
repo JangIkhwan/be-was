@@ -15,7 +15,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     private static final Logger logger = LoggerFactory.getLogger(ArticleRepositoryImpl.class);
 
     public Article save(Article article) {
-        String sql = "insert into article_tbl(creatorId, title, content, imageUrl) values(?, ?, ?, ?)";
+        String sql = "insert into article_tbl(creatorId, title, content, image_url) values(?, ?, ?, ?)";
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
                 PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -23,7 +23,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             pstmt.setLong(1, article.getCreatorId());
             pstmt.setString(2, article.getTitle());
             pstmt.setString(3, article.getContent());
-            pstmt.setString(3, article.getImageUrl());
+            pstmt.setString(4, article.getImageUrl());
 
             pstmt.executeUpdate();
 
