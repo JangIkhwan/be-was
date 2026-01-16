@@ -43,6 +43,7 @@ public class RequestHandler implements Runnable {
         routingTable.add(new SimpleRouting("/article", Map.of("POST", new CreateArticleHandler(articleRepository))));
         routingTable.add(new PathVariableRouting("/uploads/images/{imageUrl}", Map.of("GET", new GetImageHandler())));
         routingTable.add(new SimpleRouting("/mypage/profile-image", Map.of("DELETE", new DeleteProfileImageHandler(userRepository))));
+        routingTable.add(new PathVariableRouting("/article/{articleId}/like", Map.of("POST", new IncreaseArticleLikeHandler(articleRepository))));
 
         staticResourceHandler = new StaticResourceHandler();
         sessionStore = new SessionStore();
