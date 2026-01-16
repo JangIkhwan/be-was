@@ -14,7 +14,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
     public User save(User user) {
-        String sql = "insert into user_tbl(password, nickname, email, image_url) values(?, ?, ?)";
+        String sql = "insert into user_tbl(password, nickname, email, image_url) values(?, ?, ?, ?)";
 
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
