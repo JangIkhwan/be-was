@@ -49,7 +49,9 @@ public class MainHandler implements Handler {
             article.setWriterName(user.getName());
 
             model.put("article", article);
-            model.put("writer_profile_image", user.getImageUrl());
+            if(user.getImageUrl() != null){
+                model.put("writer_profile_image", user.getImageUrl());
+            }
         }
 
         return new MainPageDynamicView(model,"/index_logined.html");
