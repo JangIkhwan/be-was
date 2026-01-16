@@ -25,21 +25,24 @@ public class LoginHandler implements Handler {
 
     @Override
     public ModelAndView handle(Request request, Response response) {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String email = request.getParameter("email").trim();
+        String password = request.getParameter("password").trim();
 
         Optional<User> byEmail = userRepository.findByEmail(email);
         if(byEmail.isEmpty()){
+            logger.debug("유저 없음");
             return new StaticResourceView("/login/error.html");
         }
 
-        if(!matchedPassword(byEmail.get(), password)){
+        User user = byEmail.get();
+        if(!matchedPassword(user.getPassword(), password)){
+            logger.debug("비번 일치 안함");
             return new StaticResourceView("/login/error.html");
         }
 
         SessionStore sessionStore = request.getSessionStore();
         String sessionId = UUID.randomUUID().toString();
-        sessionStore.addSession(sessionId, byEmail.get());
+        sessionStore.addSession(sessionId, user);
 
         logger.debug("session created = {}", sessionId);
 
@@ -49,7 +52,7 @@ public class LoginHandler implements Handler {
         return new RedirectView("/");
     }
 
-    private static boolean matchedPassword(User userById, String password) {
-        return userById.getPassword().equals(password);
+    private static boolean matchedPassword(String originalPassword, String password) {
+        return originalPassword.equals(password);
     }
 }
