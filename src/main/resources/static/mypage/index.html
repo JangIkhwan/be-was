@@ -37,7 +37,7 @@
                     </div>
                     <div class="btn_bar"></div>
                     <div class="btn_profile">
-                        <div class="btn_container" onclick="">삭제</div>
+                        <div class="btn_container" onclick="onClickDeleteButton()">삭제</div>
                     </div>
                 </div>
             </div>
@@ -90,6 +90,24 @@
 </div>
 <script>
     let selectedImageFile = null;
+
+    async function onClickDeleteButton(){
+        const response = await fetch('/mypage/profile-image', {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (response.redirected) {
+            window.location.href = response.url;
+            alert('프로필 이미지가 삭제되었습니다.');
+            return;
+        }
+
+        if (!response.ok) {
+            alert('프로필 이미지 삭제에 실패했습니다.');
+            return;
+        }
+    }
 
     function onClickChangeButton() {
         document.querySelector('#image').click();

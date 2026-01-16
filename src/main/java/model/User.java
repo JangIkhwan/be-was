@@ -55,9 +55,6 @@ public class User {
     }
 
     public void changeProfileImage(String imageUrl) {
-        if(imageUrl == null){
-            throw new BusinessException();
-        }
         this.imageUrl = imageUrl;
     }
 
