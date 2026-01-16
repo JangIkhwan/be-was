@@ -42,7 +42,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
 
     @Override
     public List<Article> findTopNLessThanByIdDecreasingOrder(int limit, long id) {
-        String sql = "select id, creatorId, title, content, image_url from article_tbl where id < ? order by id desc limit ?";
+        String sql = "select id, creatorId, title, content, image_url, like_count from article_tbl where id < ? order by id desc limit ?";
 
         try (
                 Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
@@ -60,7 +60,8 @@ public class ArticleRepositoryImpl implements ArticleRepository {
                     String title = rs.getString("title");
                     String content = rs.getString("content");
                     String imageUrl = rs.getString("image_url");
-                    articles.add(new Article(articleId, creatorId, title, content, imageUrl));
+                    long likeCount = rs.getLong("like_count");
+                    articles.add(new Article(articleId, creatorId, title, content, imageUrl, likeCount));
                 }
             }
             return articles;
