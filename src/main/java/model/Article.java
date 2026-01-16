@@ -30,7 +30,7 @@ public class Article {
         return id;
     }
 
-    public long getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
@@ -50,11 +50,19 @@ public class Article {
         return imageUrl;
     }
 
+    public Long getLikeCount() {
+        return likeCount;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
 
     public void setWriterName(String creatorName) {
         this.writerName = creatorName;
+    }
+
+    public void increaseLikeCount() {
+        likeCount++;
     }
 }
