@@ -25,19 +25,19 @@ public class LoginHandler implements Handler {
 
     @Override
     public ModelAndView handle(Request request, Response response) {
-        String email = request.getParameter("email").trim();
-        String password = request.getParameter("password").trim();
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-        Optional<User> byEmail = userRepository.findByEmail(email);
-        if(byEmail.isEmpty()){
+        Optional<User> byEmail = userRepository.findByEmail(email.trim());
+        if( byEmail.isEmpty()){
             logger.debug("유저 없음");
-            return new StaticResourceView("/login/error.html");
+            return new StaticResourceView("/login/error_due_to_id.html");
         }
 
         User user = byEmail.get();
-        if(!matchedPassword(user.getPassword(), password)){
+        if(password == null || !matchedPassword(user.getPassword(), password.trim())){
             logger.debug("비번 일치 안함");
-            return new StaticResourceView("/login/error.html");
+            return new StaticResourceView("/login/error_due_to_pw.html");
         }
 
         SessionStore sessionStore = request.getSessionStore();
