@@ -7,13 +7,15 @@ public class Article {
     private String title;
     private String content;
     private String imageUrl;
+    private Long likeCount;
 
-    public Article(Long id, Long creatorId, String title, String content, String imageUrl) {
+    public Article(Long id, Long creatorId, String title, String content, String imageUrl, Long likeCount) {
         this.id = id;
         this.creatorId = creatorId;
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.likeCount = likeCount;
     }
 
     public Article(Long creatorId, String title, String content, String imageUrl) {
@@ -21,6 +23,7 @@ public class Article {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.likeCount = 0L;
     }
 
     public Long getId() {
