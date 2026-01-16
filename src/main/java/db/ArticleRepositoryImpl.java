@@ -130,4 +130,100 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public Optional<Article> findLatest() {
+        String sql = "select id, creatorId, title, content, image_url, like_count " +
+                "from article_tbl order by id desc limit 1";
+
+        try (
+                Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery();
+        ) {
+            if (!rs.next()) {
+                return Optional.empty();
+            }
+
+            Article article = new Article(
+                    rs.getLong("id"),
+                    rs.getLong("creatorId"),
+                    rs.getString("title"),
+                    rs.getString("content"),
+                    rs.getString("image_url"),
+                    rs.getLong("like_count")
+            );
+
+            return Optional.of(article);
+        } catch (SQLException e) {
+            logger.error("최신 Article 조회 실패", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<Article> findNext(Long id) {
+        String sql = "select id, creatorId, title, content, image_url, like_count " +
+                "from article_tbl where id > ? order by id asc limit 1";
+
+        try (
+                Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+                PreparedStatement pstmt = con.prepareStatement(sql);
+        ) {
+            pstmt.setLong(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+
+                Article article = new Article(
+                        rs.getLong("id"),
+                        rs.getLong("creatorId"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("image_url"),
+                        rs.getLong("like_count")
+                );
+
+                return Optional.of(article);
+            }
+        } catch (SQLException e) {
+            logger.error("다음 Article 조회 실패 id={}", id, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<Article> findPrev(Long id) {
+        String sql = "select id, creatorId, title, content, image_url, like_count " +
+                "from article_tbl where id < ? order by id desc limit 1";
+
+        try (
+                Connection con = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+                PreparedStatement pstmt = con.prepareStatement(sql);
+        ) {
+            pstmt.setLong(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+
+                Article article = new Article(
+                        rs.getLong("id"),
+                        rs.getLong("creatorId"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("image_url"),
+                        rs.getLong("like_count")
+                );
+
+                return Optional.of(article);
+            }
+        } catch (SQLException e) {
+            logger.error("이전 Article 조회 실패 id={}", id, e);
+            throw new RuntimeException(e);
+        }
+    }
 }

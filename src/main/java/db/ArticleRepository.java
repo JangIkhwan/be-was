@@ -13,4 +13,10 @@ public interface ArticleRepository {
     Optional<Article> findById(long id);
 
     void update(Article article);
+
+    Optional<Article> findLatest();
+
+    Optional<Article> findNext(Long id);
+
+    Optional<Article> findPrev(Long id);
 }

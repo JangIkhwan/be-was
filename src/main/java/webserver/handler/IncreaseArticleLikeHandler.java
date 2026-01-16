@@ -29,6 +29,6 @@ public class IncreaseArticleLikeHandler implements Handler {
 
         articleRepository.update(article);
 
-        return new RedirectView("/");
+        return new RedirectView("/?articleId=" + articleId);
     }
 }
