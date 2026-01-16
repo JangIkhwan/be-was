@@ -33,17 +33,23 @@ public class MainHandler implements Handler {
         User loginUser = AuthUtil.getAuthenticatedUser(request);
         if(loginUser != null){
             logger.debug("session found");
-            model.put("name", loginUser.getName());
+
+            User user = userRepository.findById(loginUser.getId())
+                    .orElseThrow(() -> new RuntimeException());
+            model.put("name", user.getName());
         }
 
         List<Article> latests = articleRepository.findTopNLessThanByIdDecreasingOrder(1, 100L);
         if(!latests.isEmpty()){
             logger.debug("found latest article");
+
             Article article = latests.get(0);
             User user = userRepository.findById(article.getCreatorId())
                     .orElseThrow(() -> new RuntimeException());
             article.setWriterName(user.getName());
+
             model.put("article", article);
+            model.put("writer_profile_image", user.getImageUrl());
         }
 
         return new MainPageDynamicView(model,"/index_logined.html");

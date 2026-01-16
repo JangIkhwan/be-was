@@ -51,6 +51,8 @@ public class MainPageDynamicView implements ModelAndView {
                 baseHtml = baseHtml.replace("${{header_menu}}", headerMenuTemplate);
             }
 
+
+
             if (model.containsKey("article")) {
                 Article article = (Article) model.get("article");
                 Path templatePath = Paths.get("./src/main/resources/static" + "/template/article.html");
@@ -60,6 +62,13 @@ public class MainPageDynamicView implements ModelAndView {
                 articleTemplate = articleTemplate.replace("${{writer}}", article.getWriterName());
                 articleTemplate = articleTemplate.replace("${{content}}", article.getContent());
                 articleTemplate = articleTemplate.replace("${{image_url}}", article.getImageUrl());
+
+                if(model.containsKey("writer_profile_image")){
+                    articleTemplate = articleTemplate.replace("${{writer_profile_image}}", (String) model.get("writer_profile_image"));
+                }
+                else{
+                    articleTemplate = articleTemplate.replace("${{writer_profile_image}}", "");
+                }
 
                 if (!model.containsKey("comments")) {
                     articleTemplate = articleTemplate.replace("${{comments}}", "댓글이 없습니다");
