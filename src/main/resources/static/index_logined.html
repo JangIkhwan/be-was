@@ -18,7 +18,7 @@
         <nav class="nav">
             <ul class="nav__menu">
                 <li class="nav__menu__item">
-                    <a class="nav__menu__item__btn" href="">
+                    <a class="nav__menu__item__btn" href="${{prev_url}}" >
                         <img
                                 class="nav__menu__item__img"
                                 src="./img/ci_chevron-left.svg"
@@ -26,11 +26,9 @@
                         이전 글
                     </a>
                 </li>
+                ${{article_add_comment_button}}
                 <li class="nav__menu__item">
-                    <a class="btn btn_ghost btn_size_m">댓글 작성</a>
-                </li>
-                <li class="nav__menu__item">
-                    <a class="nav__menu__item__btn" href="">
+                    <a class="nav__menu__item__btn" href="${{next_url}}">
                         다음 글
                         <img
                                 class="nav__menu__item__img"
@@ -76,6 +74,15 @@ likeButtons.forEach(button => {
         }
     });
 });
+
+document.querySelectorAll(".nav__menu__item__btn").forEach(link => {
+    const href = link.getAttribute("href");
+
+    if (!href || href.trim() === "") {
+        link.style.display = "none";
+    }
+});
+
 </script>
 </body>
 </html>

@@ -51,8 +51,6 @@ public class MainPageDynamicView implements ModelAndView {
                 baseHtml = baseHtml.replace("${{header_menu}}", headerMenuTemplate);
             }
 
-
-
             if (model.containsKey("article")) {
                 Article article = (Article) model.get("article");
                 Path templatePath = Paths.get("./src/main/resources/static" + "/template/article.html");
@@ -65,10 +63,9 @@ public class MainPageDynamicView implements ModelAndView {
                 articleTemplate = articleTemplate.replace("${{image_url}}", article.getImageUrl());
                 articleTemplate = articleTemplate.replace("${{article_like_count}}", String.valueOf(article.getLikeCount()));
 
-                if(model.containsKey("writer_profile_image")){
+                if (model.containsKey("writer_profile_image")) {
                     articleTemplate = articleTemplate.replace("${{writer_profile_image}}", (String) model.get("writer_profile_image"));
-                }
-                else{
+                } else {
                     articleTemplate = articleTemplate.replace("${{writer_profile_image}}", "");
                 }
 
@@ -79,8 +76,28 @@ public class MainPageDynamicView implements ModelAndView {
 
                 baseHtml = baseHtml.replace("${{article}}", articleTemplate);
 
+                templatePath = Paths.get("./src/main/resources/static" + "/template/article_add_comment_button.html");
+                String addCommentButtonTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
+
+                baseHtml = baseHtml.replace("${{article_add_comment_button}}", addCommentButtonTemplate);
+
             } else {
-                baseHtml = baseHtml.replace("${{article}}", "첫 게시글을 써주세요");
+                baseHtml = baseHtml.replace("${{article}}", (String) model.getOrDefault("message", "존재하지 않는 게시물입니다."));
+                baseHtml = baseHtml.replace("${{article_add_comment_button}}", "");
+            }
+
+            if (model.containsKey("next_article")) {
+                Article next = (Article) model.get("next_article");
+                baseHtml = baseHtml.replace("${{next_url}}", "/?articleId=" + next.getId());
+            } else {
+                baseHtml = baseHtml.replace("${{next_url}}", "");
+            }
+
+            if (model.containsKey("prev_article")) {
+                Article prev = (Article) model.get("prev_article");
+                baseHtml = baseHtml.replace("${{prev_url}}", "/?articleId=" + prev.getId());
+            } else {
+                baseHtml = baseHtml.replace("${{prev_url}}", "");
             }
 
             logger.debug("after baseHtml = {} ", baseHtml);

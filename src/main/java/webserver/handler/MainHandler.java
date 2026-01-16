@@ -2,10 +2,10 @@ package webserver.handler;
 
 import db.ArticleRepository;
 import db.UserRepository;
-import model.Article;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.exception.BusinessException;
 import webserver.http.Request;
 import webserver.http.Response;
 import webserver.mvc.*;
@@ -14,7 +14,6 @@ import webserver.view.MainPageDynamicView;
 import webserver.mvc.ModelAndView;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MainHandler implements Handler {
@@ -31,29 +30,89 @@ public class MainHandler implements Handler {
         Map<String, Object> model = new HashMap<>();
 
         User loginUser = AuthUtil.getAuthenticatedUser(request);
-        if(loginUser != null){
+        if (loginUser != null) {
             logger.debug("session found");
 
             User user = userRepository.findById(loginUser.getId())
-                    .orElseThrow(() -> new RuntimeException());
+                    .orElseThrow(() -> new BusinessException());
             model.put("name", user.getName());
         }
 
-        List<Article> latests = articleRepository.findTopNLessThanByIdDecreasingOrder(1, 100L);
-        if(!latests.isEmpty()){
-            logger.debug("found latest article");
+        if (hasArticleId(request)) {
+            try{
+                long articleId = getArticleId(request);
+                findOne(articleId, model);
+            }
+            catch(NumberFormatException e){
+                findLatest(model);
+            }
+        } else {
+            findLatest(model);
+        }
 
-            Article article = latests.get(0);
+        return new MainPageDynamicView(model, "/index_logined.html");
+    }
+
+    private void findOne(long articleId, Map<String, Object> model) {
+        articleRepository.findById(articleId).ifPresent(article -> {
+            logger.debug("found certain article");
+
             User user = userRepository.findById(article.getCreatorId())
-                    .orElseThrow(() -> new RuntimeException());
+                    .orElseThrow(() -> new BusinessException());
+
             article.setWriterName(user.getName());
 
             model.put("article", article);
-            if(user.getImageUrl() != null){
+            if (user.getImageUrl() != null) {
                 model.put("writer_profile_image", user.getImageUrl());
             }
-        }
 
-        return new MainPageDynamicView(model,"/index_logined.html");
+            articleRepository.findNext(article.getId()).ifPresent(next -> {
+                model.put("next_article", next);
+            });
+
+            articleRepository.findPrev(article.getId()).ifPresent(prev -> {
+                model.put("prev_article", prev);
+            });
+        });
+    }
+
+    private void findLatest(Map<String, Object> model) {
+        articleRepository.findLatest().ifPresentOrElse(article -> {
+                    logger.debug("found latest article");
+
+                    User user = userRepository.findById(article.getCreatorId())
+                            .orElseThrow(() -> new BusinessException());
+
+                    article.setWriterName(user.getName());
+
+                    model.put("article", article);
+
+                    if (user.getImageUrl() != null) {
+                        model.put("writer_profile_image", user.getImageUrl());
+                    }
+
+                    articleRepository.findNext(article.getId()).ifPresent(next -> {
+                        logger.debug("added next");
+                        model.put("next_article", next);
+                    });
+
+                    articleRepository.findPrev(article.getId()).ifPresent(prev -> {
+                        logger.debug("added prev");
+                        model.put("prev_article", prev);
+                    });
+                },
+                () -> {
+                    model.put("message", "첫번째 게시글을 작성해주세요");
+                });
+    }
+
+    private boolean hasArticleId(Request request) {
+        return request.getParameter("articleId") != null;
+    }
+
+    private long getArticleId(Request request) {
+        String articleId = request.getParameter("articleId");
+        return Integer.parseInt(articleId);
     }
 }
