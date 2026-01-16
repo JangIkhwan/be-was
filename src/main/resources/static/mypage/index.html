@@ -51,6 +51,7 @@
                 <div class="textfield textfield_size_s input_margin">
                     <p class="title_textfield">닉네임</p>
                     <input
+                            id="name"
                             class="input_textfield"
                             placeholder="${{name}}"
                             autocomplete="username"
@@ -59,6 +60,7 @@
                 <div class="textfield textfield_size_s">
                     <p class="title_textfield">비밀번호</p>
                     <input
+                            id="password"
                             class="input_textfield"
                             placeholder="비밀번호를 변경할 경우 입력해주세요"
                             autocomplete="current-password"
@@ -67,6 +69,7 @@
                 <div class="textfield textfield_size_s">
                     <p class="title_textfield">비밀번호 확인</p>
                     <input
+                            id="passwordConfirm"
                             class="input_textfield"
                             type="password"
                             placeholder="한 번 더 입력해주세요"
@@ -86,6 +89,8 @@
     </div>
 </div>
 <script>
+    let selectedImageFile = null;
+
     function onClickChangeButton() {
         document.querySelector('#image').click();
     }
@@ -103,13 +108,27 @@
 
 
     document.querySelector('#registration-btn').addEventListener('click', async () => {
-        if (!selectedImageFile) {
-            alert('변경된 이미지가 없습니다.');
-            return;
+        const name = document.querySelector('#name').value;
+        const password = document.querySelector('#password').value;
+        const passwordConfirm = document.querySelector('#passwordConfirm').value;
+
+        // 비밀번호 검증 (입력된 경우만)
+        if (password || passwordConfirm) {
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
         }
 
         const formData = new FormData();
-        formData.append('image', selectedImageFile);
+
+        //  비어 있어도 전부 전송
+        formData.append('name', name);
+        formData.append('password', password);
+
+        if (selectedImageFile) {
+            formData.append('image', selectedImageFile);
+        }
 
         const response = await fetch('/mypage', {
             method: 'PATCH',
@@ -119,15 +138,14 @@
 
         if (response.redirected) {
             window.location.href = response.url;
+            alert('프로필이 변경되었습니다.');
             return;
         }
 
         if (!response.ok) {
-            alert('이미지는 필수 값입니다');
+            alert('프로필 변경에 실패했습니다.');
             return;
         }
-
-        alert('프로필이 변경되었습니다.');
     });
 </script>
 </body>

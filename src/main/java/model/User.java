@@ -64,4 +64,12 @@ public class User {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }
