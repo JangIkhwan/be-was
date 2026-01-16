@@ -59,9 +59,11 @@ public class MainPageDynamicView implements ModelAndView {
                 String articleTemplate = Files.readString(templatePath, StandardCharsets.UTF_8);
                 logger.debug("articleTemplate = {}", articleTemplate);
 
+                articleTemplate = articleTemplate.replace("${{article_id}}", String.valueOf(article.getId()));
                 articleTemplate = articleTemplate.replace("${{writer}}", article.getWriterName());
                 articleTemplate = articleTemplate.replace("${{content}}", article.getContent());
                 articleTemplate = articleTemplate.replace("${{image_url}}", article.getImageUrl());
+                articleTemplate = articleTemplate.replace("${{article_like_count}}", String.valueOf(article.getLikeCount()));
 
                 if(model.containsKey("writer_profile_image")){
                     articleTemplate = articleTemplate.replace("${{writer_profile_image}}", (String) model.get("writer_profile_image"));

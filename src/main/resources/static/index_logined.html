@@ -47,5 +47,35 @@
         </div>
     </div>
 </div>
+<script>
+const likeButtons = document.querySelectorAll(".like-btn");
+
+likeButtons.forEach(button => {
+    button.addEventListener("click", async () => {
+        const articleId = button.dataset.articleId;
+
+        try {
+            const response = await fetch(`/article/${articleId}/like`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error("좋아요 실패");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("좋아요 처리 중 오류 발생");
+        }
+    });
+});
+</script>
 </body>
 </html>
